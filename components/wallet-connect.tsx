@@ -4,7 +4,7 @@ import { ConnectWallet } from "@thirdweb-dev/react";
 
 export default function ConnectWalletButton() {
   return (
-    <div className="">
+    <div className=" w-full border-white">
       <ConnectWallet
         theme="dark" 
         btnTitle="Connect Wallet"

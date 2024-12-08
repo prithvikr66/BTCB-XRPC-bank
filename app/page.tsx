@@ -6,7 +6,6 @@ import { useState } from "react";
 
 export default function Home() {
   const [queryClient] = useState(() => new QueryClient());
-  console.log("chain id",ChainId.Mainnet);
   return (
     <QueryClientProvider client={queryClient}>
       <ThirdwebProvider activeChain={ChainId.Mainnet}>

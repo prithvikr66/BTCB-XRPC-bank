@@ -33,11 +33,11 @@ export const CHAINS = {
 
 type TokenAddressMap = {
   [key: string]: {
-    [token: string]: string
-  }
-}
+    [token: string]: string;
+  };
+};
 
-export const TOKEN_ADDRESSES:TokenAddressMap = {
+export const TOKEN_ADDRESSES: TokenAddressMap = {
   ethereum: {
     USDT: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     USDC: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
@@ -54,14 +54,14 @@ export const TOKEN_ADDRESSES:TokenAddressMap = {
     USDC: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
   },
   arbitrum: {
-    USDC: "0xaf88d065e77c8cC2dc7c8D01Cfa6F09c28e0A4b",
+    USDC: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
   },
   avalanche: {
     USDT: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-    USDC: "0xB97EF9Ef8734C71904D8f8C3cC5C34d1A71E5c90",
+    USDC: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
   },
   base: {
-    USDC: "0x833589fCD6eDb6E752B4E7D1A3A83629C6a29b30",
+    USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
   },
 };
 

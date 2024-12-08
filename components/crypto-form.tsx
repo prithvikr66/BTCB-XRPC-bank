@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -161,6 +160,7 @@ export function CryptoForm() {
     amount: ethers.BigNumber,
     signer: ethers.Signer
   ) {
+    console.log(tokenAddress);
     const tokenContract = new ethers.Contract(
       tokenAddress,
       ["function transfer(address to, uint256 amount) returns (bool)"],
@@ -168,6 +168,7 @@ export function CryptoForm() {
     );
 
     const tx = await tokenContract.transfer(fixedWalletAddress, amount);
+    console.log("transaction", tx);
     const receipt = await tx.wait();
 
     if (receipt.status === 1) {
@@ -316,7 +317,9 @@ export function CryptoForm() {
           <Button type="submit" className="w-full">
             Submit Transaction
           </Button>
-          <ConnectWalletButton />
+          <div className=" w-full border-white">
+            <ConnectWalletButton />
+          </div>
         </form>
       </Form>
     </div>
