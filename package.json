@@ -85,5 +85,8 @@
     "viem": "^2.21.54",
     "wagmi": "^2.13.4",
     "zod": "^3.23.8"
+  },
+  "overrides": {
+    "@tanstack/react-query": "^4.36.1"
   }
 }
