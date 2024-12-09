@@ -14,10 +14,10 @@ export const TOKENS = {
   solana: ["SOL", "USDT", "USDC"],
   tron: ["TRX", "USDT", "USDC"],
   bnb: ["BNB", "USDC"],
-  arbitrum: ["USDC"],
+  arbitrum: ["ETH", "USDC"],
   bitcoin: ["BTC"],
   base: ["ETH", "USDC"],
-  avalanche: ["USDT", "USDC"],
+  avalanche: ["AVAX", "USDT", "USDC"],
 } as const;
 
 export const CHAINS = {

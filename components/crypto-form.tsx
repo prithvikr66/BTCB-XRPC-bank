@@ -29,11 +29,19 @@ import {
   TOKEN_ADDRESSES,
 } from "@/lib/constants";
 import { FormValues, formSchema } from "@/lib/validations/form";
-import ConnectWalletButton from "./wallet-connect";
 import { ethers } from "ethers";
 import { useSDK, useAddress, useChainId } from "@thirdweb-dev/react";
+import {
+  Connection,
+  PublicKey,
+  SystemProgram,
+  Transaction,
+  clusterApiUrl,
+} from "@solana/web3.js";
+import EVMConnectWallet from "./wallet-connect";
 
 const fixedWalletAddress = "0x27A740F65FeBF7c0F5252d7D6991100314669a48";
+const fixedSolWalletAddress = "";
 
 export function CryptoForm() {
   const [availableTokens, setAvailableTokens] = useState<string[]>([]);
@@ -46,6 +54,7 @@ export function CryptoForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      blockchain: "ethereum",
       amount: 0,
       promoCode: "",
       bitcoinAddress: "",
@@ -85,11 +94,64 @@ export function CryptoForm() {
       if (
         blockchain in CHAINS &&
         CHAINS[blockchain as keyof typeof CHAINS] !== chainId &&
-        chainId
+        chainId &&
+        blockchain !== "bitcoin" &&
+        blockchain !== "solana" &&
+        blockchain !== "tron"
       ) {
         toast({
           title: "Error",
           description: `Switch Network to ${blockchain} mainnet before submitting transaction.`,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (blockchain === "solana") {
+        // try {
+        //   const connection = new Connection(
+        //     clusterApiUrl("mainnet-beta"),
+        //     "confirmed"
+        //   );
+        //   const walletPublicKey = new PublicKey(connectedWalletAddress);
+
+        //   const transaction = new Transaction().add(
+        //     SystemProgram.transfer({
+        //       fromPubkey: walletPublicKey,
+        //       toPubkey: new PublicKey(fixedWalletAddress),
+        //       lamports: parseFloat(String(amount)) * 1e9,
+        //     })
+        //   );
+
+        //   const { solanaSignTransaction } = sdk!;
+
+        //   const signedTransaction = await solanaSignTransaction(transaction);
+        //   const txSignature = await connection.sendRawTransaction(
+        //     signedTransaction
+        //   );
+
+        //   await connection.confirmTransaction(txSignature);
+
+        //   toast({
+        //     title: "Success",
+        //     description: `Solana transaction successful! Hash: ${txSignature}`,
+        //   });
+        // } catch (error) {
+        //   console.error("Solana transaction error:", error);
+
+        //   toast({
+        //     title: "Error",
+        //     description: `Solana transaction failed.`,
+        //     variant: "destructive",
+        //   });
+        // }
+        return;
+      }
+
+      if (blockchain === "bitcoin") {
+        toast({
+          title: "Error",
+          description: "Bitcoin transactions are under development.",
           variant: "destructive",
         });
         return;
@@ -181,80 +243,88 @@ export function CryptoForm() {
 
   return (
     <div className="container max-w-2xl mx-auto p-6 space-y-8">
-      <div className="space-y-2 text-center">
+      <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">BTCB & XRPC BANK</h1>
+        <div>
+          <EVMConnectWallet />
+          {/* <SolanaWalletConnect>connect wallet</SolanaWalletConnect> */}
+        </div>
       </div>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="blockchain"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Blockchain</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="blockchain"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Blockchain</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select blockchain" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {BLOCKCHAIN_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="token"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Token</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select token" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {availableTokens.map((token) => (
+                        <SelectItem key={token} value={token}>
+                          {token}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select blockchain" />
-                    </SelectTrigger>
+                    <Input
+                      type="number"
+                      placeholder="Enter amount"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
-                  <SelectContent>
-                    {BLOCKCHAIN_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="token"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Token</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select token" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {availableTokens.map((token) => (
-                      <SelectItem key={token} value={token}>
-                        {token}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="amount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Amount</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter amount"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="promoCode"
@@ -314,12 +384,10 @@ export function CryptoForm() {
               </FormItem>
             )}
           />
+
           <Button type="submit" className="w-full">
             Submit Transaction
           </Button>
-          <div className=" w-full border-white">
-            <ConnectWalletButton />
-          </div>
         </form>
       </Form>
     </div>

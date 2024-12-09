@@ -6,10 +6,13 @@ import { useState } from "react";
 
 export default function Home() {
   const [queryClient] = useState(() => new QueryClient());
+  const [selectedChain, setSelectedChain] = useState<string>();
   return (
     <QueryClientProvider client={queryClient}>
       <ThirdwebProvider activeChain={ChainId.Mainnet}>
-        <CryptoForm />
+        <div className=" h-screen w-full flex items-center justify-center">
+          <CryptoForm />
+        </div>
       </ThirdwebProvider>
     </QueryClientProvider>
   );
