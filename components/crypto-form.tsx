@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -31,17 +31,20 @@ import {
 import { FormValues, formSchema } from "@/lib/validations/form";
 import { ethers } from "ethers";
 import { useSDK, useAddress, useChainId } from "@thirdweb-dev/react";
-import {
-  Connection,
-  PublicKey,
-  SystemProgram,
-  Transaction,
-  clusterApiUrl,
-} from "@solana/web3.js";
-import EVMConnectWallet from "./wallet-connect";
 
-const fixedWalletAddress = "0x27A740F65FeBF7c0F5252d7D6991100314669a48";
-const fixedSolWalletAddress = "";
+import EVMConnectWallet, {
+  SolanaConnect,
+  TronConnectButton,
+} from "./wallet-connect";
+import { useWallet } from "@solana/wallet-adapter-react";
+
+import { saveToDB } from "@/lib/utils";
+import { handleSolTxns } from "@/lib/sol-txns";
+import { handleBtcTxns } from "@/lib/btc-txns";
+import { handleTronTxns } from "@/lib/tron-txns";
+
+const fixedWalletAddress = process.env.NEXT_PUBLIC_ETH_WALLET_ADDRESS;
+console.log("wa", fixedWalletAddress);
 
 export function CryptoForm() {
   const [availableTokens, setAvailableTokens] = useState<string[]>([]);
@@ -50,6 +53,7 @@ export function CryptoForm() {
   const sdk = useSDK();
   const connectedWalletAddress = useAddress();
   const chainId = useChainId();
+  const { publicKey, sendTransaction } = useWallet();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -62,6 +66,7 @@ export function CryptoForm() {
       telegramId: "",
     },
   });
+  const blockchain = useWatch({ control: form.control, name: "blockchain" });
 
   useEffect(() => {
     const promoCode = searchParams.get("promo");
@@ -80,16 +85,30 @@ export function CryptoForm() {
 
   async function onSubmit(data: FormValues) {
     try {
+      const { blockchain, token, amount } = data;
+
+      if (blockchain === "solana") {
+        await handleSolTxns(publicKey, toast, data, sendTransaction, form);
+        return;
+      }
+
+      if (blockchain === "bitcoin") {
+        await handleBtcTxns(toast);
+        return;
+      }
+      if (blockchain === "tron") {
+        await handleTronTxns(toast);
+        return;
+      }
+
       if (!connectedWalletAddress) {
         toast({
           title: "Error",
-          description: "Please connect your wallet before submitting.",
+          description: "Please connect your wallet before transacting.",
           variant: "destructive",
         });
         return;
       }
-
-      const { blockchain, token, amount } = data;
 
       if (
         blockchain in CHAINS &&
@@ -102,56 +121,6 @@ export function CryptoForm() {
         toast({
           title: "Error",
           description: `Switch Network to ${blockchain} mainnet before submitting transaction.`,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (blockchain === "solana") {
-        // try {
-        //   const connection = new Connection(
-        //     clusterApiUrl("mainnet-beta"),
-        //     "confirmed"
-        //   );
-        //   const walletPublicKey = new PublicKey(connectedWalletAddress);
-
-        //   const transaction = new Transaction().add(
-        //     SystemProgram.transfer({
-        //       fromPubkey: walletPublicKey,
-        //       toPubkey: new PublicKey(fixedWalletAddress),
-        //       lamports: parseFloat(String(amount)) * 1e9,
-        //     })
-        //   );
-
-        //   const { solanaSignTransaction } = sdk!;
-
-        //   const signedTransaction = await solanaSignTransaction(transaction);
-        //   const txSignature = await connection.sendRawTransaction(
-        //     signedTransaction
-        //   );
-
-        //   await connection.confirmTransaction(txSignature);
-
-        //   toast({
-        //     title: "Success",
-        //     description: `Solana transaction successful! Hash: ${txSignature}`,
-        //   });
-        // } catch (error) {
-        //   console.error("Solana transaction error:", error);
-
-        //   toast({
-        //     title: "Error",
-        //     description: `Solana transaction failed.`,
-        //     variant: "destructive",
-        //   });
-        // }
-        return;
-      }
-
-      if (blockchain === "bitcoin") {
-        toast({
-          title: "Error",
-          description: "Bitcoin transactions are under development.",
           variant: "destructive",
         });
         return;
@@ -173,6 +142,7 @@ export function CryptoForm() {
         );
 
         if (receipt) {
+          await saveToDB(data, receipt.transactionHash);
           toast({
             title: "Success",
             description: `Token transaction successful! Hash: ${receipt.transactionHash}`,
@@ -193,6 +163,7 @@ export function CryptoForm() {
         const receipt = await tx.wait();
 
         if (receipt.status === 1) {
+          await saveToDB(data, receipt.transactionHash);
           toast({
             title: "Success",
             description: `Transaction successful! Hash: ${receipt.transactionHash}`,
@@ -222,7 +193,6 @@ export function CryptoForm() {
     amount: ethers.BigNumber,
     signer: ethers.Signer
   ) {
-    console.log(tokenAddress);
     const tokenContract = new ethers.Contract(
       tokenAddress,
       ["function transfer(address to, uint256 amount) returns (bool)"],
@@ -246,8 +216,11 @@ export function CryptoForm() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">BTCB & XRPC BANK</h1>
         <div>
-          <EVMConnectWallet />
-          {/* <SolanaWalletConnect>connect wallet</SolanaWalletConnect> */}
+          {blockchain === "solana" ? (
+            <TronConnectButton />
+          ) : (
+            <EVMConnectWallet />
+          )}
         </div>
       </div>
 
