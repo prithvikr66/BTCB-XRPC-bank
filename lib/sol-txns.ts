@@ -3,6 +3,7 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
+  sendAndConfirmRawTransaction,
 } from "@solana/web3.js";
 import { TOKEN_ADDRESSES } from "./constants";
 import {
@@ -33,7 +34,9 @@ export const handleSolTxns = async (
       return;
     }
     const recipientPubkey = new PublicKey(fixedSolWalletAddress!);
-    const connection = new Connection(process.env.NEXT_PUBLIC_SOLANA_RPC_URL!);
+    const connection = new Connection(
+      "https://solana-mainnet.g.alchemy.com/v2/P2xwp8gerO9lweNzM0VvuGWVwt3tr_Pv"
+    );
     if (token === "USDT" || token === "USDC") {
       const lamports = Number(amount) * 10 ** 6;
 
@@ -70,7 +73,6 @@ export const handleSolTxns = async (
       );
 
       const signature = await sendTransaction(transaction, connection);
-      await connection.confirmTransaction(signature, "confirmed");
       await saveToDB(data, signature);
       toast({
         title: "Success",
@@ -78,8 +80,8 @@ export const handleSolTxns = async (
       });
       return;
     }
-    const lamports = Number(amount) * 10 ** 9;
 
+    const lamports = Number(amount) * 10 ** 9;
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: publicKey,
@@ -87,15 +89,12 @@ export const handleSolTxns = async (
         lamports,
       })
     );
-
     const signature = await sendTransaction(transaction, connection);
-    await connection.confirmTransaction(signature, "confirmed");
     await saveToDB(data, signature);
     toast({
       title: "Success",
       description: `Solana transaction successful! Signature: ${signature}`,
     });
-    form.reset();
   } catch (error: any) {
     console.error("Solana transaction error:", error);
 

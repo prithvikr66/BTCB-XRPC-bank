@@ -13,6 +13,7 @@ export const formSchema = z.object({
   }).positive("Amount must be positive"),
   promoCode: z.string().optional(),
   bitcoinAddress: z.string().optional(),
+  xrpAddress: z.string().optional(),
   email: z.string().email("Invalid email address").optional(),
   telegramId: z.string().optional(),
 }).refine((data) => {

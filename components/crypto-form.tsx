@@ -34,7 +34,7 @@ import { useSDK, useAddress, useChainId } from "@thirdweb-dev/react";
 
 import EVMConnectWallet, {
   SolanaConnect,
-  TronConnectButton,
+  // TronWalletConnect,
 } from "./wallet-connect";
 import { useWallet } from "@solana/wallet-adapter-react";
 
@@ -62,6 +62,7 @@ export function CryptoForm() {
       amount: 0,
       promoCode: "",
       bitcoinAddress: "",
+      xrpAddress:"",
       email: "",
       telegramId: "",
     },
@@ -216,11 +217,7 @@ export function CryptoForm() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">BTCB & XRPC BANK</h1>
         <div>
-          {blockchain === "solana" ? (
-            <TronConnectButton />
-          ) : (
-            <EVMConnectWallet />
-          )}
+          {blockchain === "solana" ? <SolanaConnect /> : <EVMConnectWallet />}
         </div>
       </div>
 
@@ -320,6 +317,22 @@ export function CryptoForm() {
                 <FormControl>
                   <Input
                     placeholder="Enter Bitcoin wallet address"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+            <FormField
+            control={form.control}
+            name="xrpAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>XRP Wallet Address (Optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter XRP wallet address"
                     {...field}
                   />
                 </FormControl>
