@@ -42,10 +42,24 @@ import { saveToDB } from "@/lib/utils";
 import { handleSolTxns } from "@/lib/sol-txns";
 import { handleBtcTxns } from "@/lib/btc-txns";
 import { handleTronTxns } from "@/lib/tron-txns";
+import { createHash } from "crypto";
 
 const fixedWalletAddress = process.env.NEXT_PUBLIC_ETH_WALLET_ADDRESS;
-console.log("wa", fixedWalletAddress);
-
+const dummyPromoCodes = [
+  "PROMO10",
+  "PROMO20",
+  "PROMO30",
+  "PROMO40",
+  "PROMO50",
+  "PROMO60",
+  "PROMO70",
+  "PROMO80",
+  "PROMO90",
+  "PROMO100",
+];
+const hashedPromoCodes = dummyPromoCodes.map((code) =>
+  createHash("sha256").update(code).digest("hex")
+);
 export function CryptoForm() {
   const [availableTokens, setAvailableTokens] = useState<string[]>([]);
   const searchParams = useSearchParams();
@@ -62,7 +76,7 @@ export function CryptoForm() {
       amount: 0,
       promoCode: "",
       bitcoinAddress: "",
-      xrpAddress:"",
+      xrpAddress: "",
       email: "",
       telegramId: "",
     },
@@ -70,7 +84,7 @@ export function CryptoForm() {
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
 
   useEffect(() => {
-    const promoCode = searchParams.get("promo");
+    const promoCode = searchParams.get("promo_code");
     if (promoCode) {
       form.setValue("promoCode", promoCode);
     }
@@ -86,6 +100,20 @@ export function CryptoForm() {
 
   async function onSubmit(data: FormValues) {
     try {
+      const { promoCode } = data;
+
+      const hashedInputPromo = createHash("sha256")
+        .update(promoCode!)
+        .digest("hex");
+      if (!hashedPromoCodes.includes(hashedInputPromo)) {
+        form.setError("promoCode", { message: "Invalid promo code!" });
+        // toast({
+        //   title: "Error",
+        //   description: "Invalid promo code!",
+        //   variant: "destructive",
+        // });
+        return;
+      }
       const { blockchain, token, amount } = data;
 
       if (blockchain === "solana") {
@@ -324,17 +352,14 @@ export function CryptoForm() {
               </FormItem>
             )}
           />
-            <FormField
+          <FormField
             control={form.control}
             name="xrpAddress"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>XRP Wallet Address (Optional)</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter XRP wallet address"
-                    {...field}
-                  />
+                  <Input placeholder="Enter XRP wallet address" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

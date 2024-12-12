@@ -1,5 +1,4 @@
 import * as z from "zod"
-import { TOKENS } from "@/lib/constants"
 
 export const formSchema = z.object({
   blockchain: z.string({
