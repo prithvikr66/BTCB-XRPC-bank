@@ -53,6 +53,7 @@ export const handleSolTxns = async (
         recipientTokenAddress
       );
 
+      
       if (!recipientAccountInfo) {
         toast({
           title: "Error",

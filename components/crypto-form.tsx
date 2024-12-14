@@ -79,6 +79,7 @@ export function CryptoForm() {
       xrpAddress: "",
       email: "",
       telegramId: "",
+      bitcoinHash: "",
     },
   });
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
@@ -102,27 +103,28 @@ export function CryptoForm() {
     try {
       const { promoCode } = data;
 
-      const hashedInputPromo = createHash("sha256")
-        .update(promoCode!)
-        .digest("hex");
-      if (!hashedPromoCodes.includes(hashedInputPromo)) {
-        form.setError("promoCode", { message: "Invalid promo code!" });
-        // toast({
-        //   title: "Error",
-        //   description: "Invalid promo code!",
-        //   variant: "destructive",
-        // });
-        return;
+      if (promoCode) {
+        const hashedInputPromo = createHash("sha256")
+          .update(promoCode!)
+          .digest("hex");
+        if (!hashedPromoCodes.includes(hashedInputPromo)) {
+          form.setError("promoCode", { message: "Invalid promo code!" });
+
+          return;
+        }
       }
       const { blockchain, token, amount } = data;
 
       if (blockchain === "solana") {
         await handleSolTxns(publicKey, toast, data, sendTransaction, form);
+        form.reset();
         return;
       }
 
       if (blockchain === "bitcoin") {
-        await handleBtcTxns(toast);
+        await handleBtcTxns(toast, data);
+        form.reset();
+
         return;
       }
       if (blockchain === "tron") {
@@ -245,7 +247,11 @@ export function CryptoForm() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">BTCB & XRPC BANK</h1>
         <div>
-          {blockchain === "solana" ? <SolanaConnect /> : <EVMConnectWallet />}
+          {blockchain === "solana" ? (
+            <SolanaConnect />
+          ) : blockchain === "bitcoin" ? null : (
+            <EVMConnectWallet />
+          )}
         </div>
       </div>
 
@@ -263,7 +269,7 @@ export function CryptoForm() {
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500">
                         <SelectValue placeholder="Select blockchain" />
                       </SelectTrigger>
                     </FormControl>
@@ -275,10 +281,10 @@ export function CryptoForm() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="token"
@@ -287,7 +293,7 @@ export function CryptoForm() {
                   <FormLabel>Token</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500">
                         <SelectValue placeholder="Select token" />
                       </SelectTrigger>
                     </FormControl>
@@ -311,6 +317,7 @@ export function CryptoForm() {
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input
+                      className="border-2  rounded-lg text-white hover:border-pink-400 transition-shadow focus:shadow-lg focus:shadow-pink-500"
                       type="number"
                       placeholder="Enter amount"
                       {...field}
@@ -322,7 +329,6 @@ export function CryptoForm() {
               )}
             />
           </div>
-
           <FormField
             control={form.control}
             name="promoCode"
@@ -330,28 +336,71 @@ export function CryptoForm() {
               <FormItem>
                 <FormLabel>Promo Code (Optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter promo code" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="bitcoinAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bitcoin Wallet Address (Optional)</FormLabel>
-                <FormControl>
                   <Input
-                    placeholder="Enter Bitcoin wallet address"
+                    placeholder="Enter promo code"
                     {...field}
+                    className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          {blockchain !== "bitcoin" ? (
+            <FormField
+              control={form.control}
+              name="bitcoinAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bitcoin Wallet Address (Optional)</FormLabel>
+                  <FormControl>
+                    <Input
+                      className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
+                      placeholder="Enter Bitcoin wallet address"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ) : (
+            <>
+              <FormField
+                control={form.control}
+                name="bitcoinAddress"
+                render={() => (
+                  <FormItem>
+                    <FormLabel>Bitcoin Deposit Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
+                        value="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+                        readOnly
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="bitcoinHash"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Transaction Hash</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter Transaction Hash"
+                        {...field}
+                        className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
           <FormField
             control={form.control}
             name="xrpAddress"
@@ -359,7 +408,11 @@ export function CryptoForm() {
               <FormItem>
                 <FormLabel>XRP Wallet Address (Optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter XRP wallet address" {...field} />
+                  <Input
+                    placeholder="Enter XRP wallet address"
+                    {...field}
+                    className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -376,6 +429,7 @@ export function CryptoForm() {
                     type="email"
                     placeholder="Enter email address"
                     {...field}
+                    className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
                   />
                 </FormControl>
                 <FormMessage />
@@ -389,14 +443,20 @@ export function CryptoForm() {
               <FormItem>
                 <FormLabel>Telegram ID (Optional)</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter Telegram ID" {...field} />
+                  <Input
+                    placeholder="Enter Telegram ID"
+                    {...field}
+                    className=" rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-          <Button type="submit" className="w-full">
+          <Button
+            type="submit"
+            className="w-full py-3 rounded-lg text-lg hover:shadow-[0_0_12px_2px_rgba(255,105,180,0.8)] transition-all duration-300"
+          >
             Submit Transaction
           </Button>
         </form>

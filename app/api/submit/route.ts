@@ -13,6 +13,7 @@ const transactionSchema = new mongoose.Schema({
   bitcoinAddress: { type: String, default: "" },
   email: { type: String, required: true },
   telegramId: { type: String, default: "" },
+  bitcoinHash: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
 });
 

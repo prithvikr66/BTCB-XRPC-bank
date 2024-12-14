@@ -12,7 +12,7 @@ export default function Home() {
       <SolanaWalletProvider>
         <ThirdwebProvider activeChain={ChainId.Mainnet}>
           <Suspense fallback={<div>Loading...</div>}>
-            <div className=" h-screen w-full flex items-center justify-center">
+            <div className=" lg:h-screen w-full flex items-center justify-center">
               <CryptoForm />
             </div>
           </Suspense>
