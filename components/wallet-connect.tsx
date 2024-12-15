@@ -8,8 +8,8 @@ import TronWeb from 'tronweb';
 
 export default function EVMConnectWallet() {
   return (
-    <div className=" w-full border-white">
-      <ConnectWallet theme="dark" btnTitle="Connect Wallet" />
+    <div className=" w-full border-white ">
+      <ConnectWallet theme="dark" btnTitle="Connect Wallet" className=" hover:shadow-[0_0_12px_2px_rgba(255,105,180,0.8)] transition-all duration-300" />
     </div>
   );
 }
@@ -18,7 +18,7 @@ export const SolanaConnect = () => {
   const { publicKey } = useWallet();
 
   return (
-    <WalletMultiButton>
+    <WalletMultiButton >
       {publicKey ? (
         `${publicKey.toString().slice(0, 5)}....${publicKey
           .toString()

@@ -245,7 +245,9 @@ export function CryptoForm() {
   return (
     <div className="container max-w-2xl mx-auto p-6 space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">BTCB & XRPC BANK</h1>
+        <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-[#C3E1B0]  to-[#A558FD] bg-clip-text text-transparent">
+          BTCB & XRPC BANK
+        </h1>
         <div>
           {blockchain === "solana" ? (
             <SolanaConnect />
@@ -254,7 +256,6 @@ export function CryptoForm() {
           )}
         </div>
       </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -317,7 +318,7 @@ export function CryptoForm() {
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input
-                      className="border-2  rounded-lg text-white hover:border-pink-400 transition-shadow focus:shadow-lg focus:shadow-pink-500"
+                      className="border-2  rounded-lg text-white hover:border-purple-400 transition-shadow focus:shadow-lg focus:shadow-purple-500"
                       type="number"
                       placeholder="Enter amount"
                       {...field}
@@ -455,7 +456,7 @@ export function CryptoForm() {
           />
           <Button
             type="submit"
-            className="w-full py-3 rounded-lg text-lg hover:shadow-[0_0_12px_2px_rgba(255,105,180,0.8)] transition-all duration-300"
+            className="w-full py-3 rounded-lg text-md hover:shadow-[0_0_12px_2px_rgba(255,105,180,0.8)] transition-all duration-300"
           >
             Submit Transaction
           </Button>

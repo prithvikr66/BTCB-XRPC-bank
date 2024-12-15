@@ -15,6 +15,7 @@ export default function Home() {
             <div className=" lg:h-screen w-full flex items-center justify-center">
               <CryptoForm />
             </div>
+            
           </Suspense>
         </ThirdwebProvider>
       </SolanaWalletProvider>
