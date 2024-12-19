@@ -1,17 +1,17 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
-const poppins = Poppins({
+const dmSans = DM_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "BTCB & XRPC BANK",
+  title: "BTCB Bank Presale",
   description: "Presale page",
 };
 
@@ -22,14 +22,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={poppins.className}>
+      <body className={dmSans.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-            {children}
+          {children}
           <Toaster />
         </ThemeProvider>
       </body>

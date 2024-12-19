@@ -1,7 +1,6 @@
 export const BLOCKCHAIN_OPTIONS = [
   { value: "ethereum", label: "Ethereum" },
   { value: "solana", label: "Solana" },
-  { value: "tron", label: "Tron" },
   { value: "bnb", label: "BNB" },
   { value: "arbitrum", label: "Arbitrum" },
   { value: "bitcoin", label: "Bitcoin" },
@@ -12,7 +11,6 @@ export const BLOCKCHAIN_OPTIONS = [
 export const TOKENS = {
   ethereum: ["ETH", "USDT", "USDC"],
   solana: ["SOL", "USDT", "USDC"],
-  tron: ["TRX", "USDT", "USDC"],
   bnb: ["BNB", "USDC"],
   arbitrum: ["ETH", "USDC"],
   bitcoin: ["BTC"],
