@@ -48,7 +48,7 @@ const Dropdown = ({
           isOpen ? "gradient-button-bg" : "bg-[#333232]"
         } text-white rounded-full transition focus:outline-none`}
       >
-        <div className="w-full h-full rounded-full bg-black px-4 py-2 flex justify-between items-center">
+        <div className="w-full text-lg text-[#8F8F8F] opacity text-center h-full rounded-full bg-black px-4 py-2 flex justify-between items-center">
           {selected || label}
           <svg
             className={`w-5 h-5 transition-transform ${
@@ -76,7 +76,7 @@ const Dropdown = ({
               <button
                 type="button"
                 key={blockchain ? option.value : option}
-                className="block w-full text-left px-4 py-2 text-white hover:bg-purple-500 transition"
+                className="block w-full text-left rounded-[20px] px-4 py-2 text-white hover:bg-[#121212]  transition"
                 onClick={() => handleSelect(blockchain ? option.value : option)}
               >
                 {blockchain ? option.value : option}

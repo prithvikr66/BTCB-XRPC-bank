@@ -4,22 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import {
   BLOCKCHAIN_OPTIONS,
@@ -31,7 +16,6 @@ import {
 import { FormValues, formSchema } from "@/lib/validations/form";
 import { ethers } from "ethers";
 import { useSDK, useAddress, useChainId } from "@thirdweb-dev/react";
-
 import EVMConnectWallet, { SolanaConnect } from "./wallet-connect";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { saveToDB } from "@/lib/utils";
@@ -39,7 +23,9 @@ import { handleSolTxns } from "@/lib/sol-txns";
 import { handleBtcTxns } from "@/lib/btc-txns";
 import { createHash } from "crypto";
 import Dropdown from "./dropdown";
-
+import Image from "next/image";
+import Logo from "../app/assets/BTCBLogo.png";
+import Link from "next/link";
 const fixedWalletAddress = process.env.NEXT_PUBLIC_ETH_WALLET_ADDRESS;
 const dummyPromoCodes = [
   "PROMO10",
@@ -56,7 +42,7 @@ const dummyPromoCodes = [
 const hashedPromoCodes = dummyPromoCodes.map((code) =>
   createHash("sha256").update(code).digest("hex")
 );
-export function CryptoForm() {
+export function CryptoForm({ setChain }: { setChain: any }) {
   const [availableTokens, setAvailableTokens] = useState<string[]>([]);
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -79,6 +65,7 @@ export function CryptoForm() {
     },
   });
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
+  setChain(blockchain);
   useEffect(() => {
     const promoCode = searchParams.get("promo_code");
     if (promoCode) {
@@ -95,7 +82,6 @@ export function CryptoForm() {
   }, [form.watch("blockchain")]);
 
   async function onSubmit(data: FormValues) {
-    console.log("triggered on click");
     try {
       const { promoCode } = data;
 
@@ -237,7 +223,7 @@ export function CryptoForm() {
 
   return (
     <div className="container max-w-2xl mx-auto p-6 space-y-8">
-      <div>
+      <div className=" ">
         <h1 className="text-4xl lg:text-5xl font-black gradient-text  text-center">
           BTC Bank Presale
         </h1>
@@ -245,9 +231,6 @@ export function CryptoForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <p className=" text-lg text-white opacity-50 text-center">
-              Select a payment method
-            </p>
             <div className="mt-[10px] lg:mt-[20px]">
               <Dropdown
                 blockchain={true}
@@ -256,7 +239,7 @@ export function CryptoForm() {
                 onChange={(value: any) => form.setValue("blockchain", value)}
               />
             </div>
-            <div className="mt-[10px] lg:mt-[20px]">
+            <div className="mt-[20px] lg:mt-[30px]">
               <Dropdown
                 blockchain={false}
                 label="Select Token"
@@ -267,9 +250,6 @@ export function CryptoForm() {
           </div>
 
           <div className="mt-[20px] lg:mt-[30px]">
-            <p className="text-lg text-white opacity-50 text-center">
-              Enter the amount of token you would like to purchase
-            </p>
             <div
               className="flex flex-col rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
               tabIndex={0}
@@ -288,9 +268,6 @@ export function CryptoForm() {
             )}
           </div>
           <div className="mt-[20px] lg:mt-[30px]">
-            <p className=" text-lg text-white opacity-50 text-center  ">
-              Enter Promocode (optional)
-            </p>
             <div
               className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
               tabIndex={0}
@@ -298,7 +275,7 @@ export function CryptoForm() {
               <input
                 id="promoCode"
                 type="text"
-                placeholder="Enter promo code"
+                placeholder="Enter promo code (optional)"
                 className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
                 {...form.register("promoCode")}
               />
@@ -311,9 +288,6 @@ export function CryptoForm() {
           </div>
 
           <div className="mt-[20px] lg:mt-[30px]">
-            <p className=" text-lg text-white opacity-50 text-center  ">
-              Enter Bitcoin Wallet Address (optional)
-            </p>
             <div
               className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
               tabIndex={0}
@@ -321,7 +295,7 @@ export function CryptoForm() {
               <input
                 id="bitcoinAddress"
                 type="text"
-                placeholder="Enter Bitcoin Address"
+                placeholder="Enter Bitcoin Address (optional)"
                 className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
                 {...form.register("bitcoinAddress")}
               />
@@ -333,9 +307,6 @@ export function CryptoForm() {
             )}
           </div>
           <div className="mt-[20px] lg:mt-[30px]">
-            <p className=" text-lg text-white opacity-50 text-center  ">
-              Enter XRP Wallet Address (optional)
-            </p>
             <div
               className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
               tabIndex={0}
@@ -343,7 +314,7 @@ export function CryptoForm() {
               <input
                 id="xrpAddress"
                 type="text"
-                placeholder="Enter XRP Address"
+                placeholder="Enter XRP Address (optional)"
                 className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
                 {...form.register("xrpAddress")}
               />
@@ -355,9 +326,6 @@ export function CryptoForm() {
             )}
           </div>
           <div className="mt-[20px] lg:mt-[30px]">
-            <p className=" text-lg text-white opacity-50 text-center  ">
-              Enter Email Address
-            </p>
             <div
               className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
               tabIndex={0}
@@ -377,9 +345,6 @@ export function CryptoForm() {
             )}
           </div>
           <div className="mt-[20px] lg:mt-[30px]">
-            <p className=" text-lg text-white opacity-50 text-center  ">
-              Enter Telegram ID (optional)
-            </p>
             <div
               className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
               tabIndex={0}
@@ -387,7 +352,7 @@ export function CryptoForm() {
               <input
                 id="telegramId"
                 type="text"
-                placeholder="Enter Telegram ID "
+                placeholder="Enter Telegram ID (optional)"
                 className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
                 {...form.register("telegramId")}
               />
@@ -400,7 +365,7 @@ export function CryptoForm() {
           </div>
           <div className="mt-[20px] lg:mt-[30px] w-[60%] lg:w-[50%] mx-auto">
             <SubmitButton />
-            <EVMConnectWallet />
+            {/* <EVMConnectWallet size="large" /> */}
             {/* {blockchain === "solana" ? (
               publicKey ? null : (
                 <SolanaConnect />
@@ -409,6 +374,18 @@ export function CryptoForm() {
               "bitcoin" ? null : connectedWalletAddress ? null : (
               <EVMConnectWallet />
             )} */}
+          </div>
+          <div className=" mt-[20px] lg:mt-[30px] w-[60%] lg:w-[50%] mx-auto">
+            <Link href={"/contact"} className=" ">
+              <div className="    gradient-button-bg p-[2px] rounded-full">
+                <Button
+                  type="button"
+                  className="w-full h-full py-3 rounded-full text-md md:text-md lg:text-lg gradient-button transition-all duration-300"
+                >
+                  Contact us
+                </Button>
+              </div>
+            </Link>
           </div>
         </form>
       </Form>
