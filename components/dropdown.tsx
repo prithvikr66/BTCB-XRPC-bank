@@ -15,14 +15,13 @@ const Dropdown = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleSelect = (value: any) => {
-    setSelected(value);
+  
+  const handleSelect = (value: any, label?: any) => {
+    blockchain ? setSelected(label) : setSelected(value);
     onChange(value);
     setIsOpen(false);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -75,11 +74,16 @@ const Dropdown = ({
             {options.map((option: any) => (
               <button
                 type="button"
-                key={blockchain ? option.value : option}
+                key={blockchain ? option.lable : option}
                 className="block w-full text-left rounded-[20px] px-4 py-2 text-white hover:bg-[#121212]  transition"
-                onClick={() => handleSelect(blockchain ? option.value : option)}
+                onClick={() =>
+                  handleSelect(
+                    blockchain ? option.value : option,
+                    blockchain ? option.label : ""
+                  )
+                }
               >
-                {blockchain ? option.value : option}
+                {blockchain ? option.label : option}
               </button>
             ))}
           </div>

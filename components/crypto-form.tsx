@@ -23,10 +23,11 @@ import { handleSolTxns } from "@/lib/sol-txns";
 import { handleBtcTxns } from "@/lib/btc-txns";
 import { createHash } from "crypto";
 import Dropdown from "./dropdown";
-import Image from "next/image";
-import Logo from "../app/assets/BTCBLogo.png";
 import Link from "next/link";
+import { Loader } from "lucide-react";
+
 const fixedWalletAddress = process.env.NEXT_PUBLIC_ETH_WALLET_ADDRESS;
+const BTC_DEPOSIT_ADDRESS = process.env.NEXT_PUBLIC_BTC_DEPOSIT_ADDRESS;
 const dummyPromoCodes = [
   "PROMO10",
   "PROMO20",
@@ -44,6 +45,7 @@ const hashedPromoCodes = dummyPromoCodes.map((code) =>
 );
 export function CryptoForm({ setChain }: { setChain: any }) {
   const [availableTokens, setAvailableTokens] = useState<string[]>([]);
+  const [submittingTransaction, setSubmittingTransaction] = useState(false);
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const sdk = useSDK();
@@ -66,6 +68,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   });
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
   setChain(blockchain);
+
   useEffect(() => {
     const promoCode = searchParams.get("promo_code");
     if (promoCode) {
@@ -98,17 +101,24 @@ export function CryptoForm({ setChain }: { setChain: any }) {
       const { blockchain, token, amount } = data;
 
       if (blockchain === "solana") {
+        setSubmittingTransaction(true);
         await handleSolTxns(publicKey, toast, data, sendTransaction, form);
         form.reset();
+        setSubmittingTransaction(false);
+
         return;
       }
 
       if (blockchain === "bitcoin") {
+        setSubmittingTransaction(true);
+
         await handleBtcTxns(toast, data);
         form.reset();
+        setSubmittingTransaction(false);
 
         return;
       }
+      setSubmittingTransaction(true);
 
       if (!connectedWalletAddress) {
         toast({
@@ -156,6 +166,8 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             title: "Success",
             description: `Token transaction successful! Hash: ${receipt.transactionHash}`,
           });
+          form.reset();
+          setSubmittingTransaction(false);
         } else {
           toast({
             title: "Error",
@@ -178,6 +190,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             description: `Transaction successful! Hash: ${receipt.transactionHash}`,
           });
           form.reset();
+          setSubmittingTransaction(false);
         } else {
           toast({
             title: "Error",
@@ -222,7 +235,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   }
 
   return (
-    <div className="container max-w-2xl mx-auto p-6 space-y-8">
+    <div className="container max-w-3xl mx-auto p-6 space-y-8 ">
       <div className=" ">
         <h1 className="text-4xl lg:text-5xl font-black gradient-text  text-center">
           BTC Bank Presale
@@ -259,6 +272,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
                 type="number"
                 placeholder="Enter amount"
                 className="w-full h-full px-4 py-2 rounded-[20px] text-white bg-black focus:outline-none transition-shadow"
+                {...form.register("amount", { valueAsNumber: true })}
               />
             </div>
             {form.formState.errors.amount && (
@@ -287,25 +301,64 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             )}
           </div>
 
-          <div className="mt-[20px] lg:mt-[30px]">
-            <div
-              className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
-              tabIndex={0}
-            >
-              <input
-                id="bitcoinAddress"
-                type="text"
-                placeholder="Enter Bitcoin Address (optional)"
-                className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
-                {...form.register("bitcoinAddress")}
-              />
+          {blockchain === "bitcoin" ? (
+            <>
+              <div className="mt-[20px] lg:mt-[30px]">
+                <p className=" ml-[10px]">Bitcoin Deposit Address</p>
+                <div
+                  className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px] "
+                  tabIndex={0}
+                  // onClick={() => console.log("clicked")}
+                >
+                  <input
+                    disabled={true}
+                    type="text"
+                    placeholder={BTC_DEPOSIT_ADDRESS}
+                    className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
+                  />
+                </div>
+              </div>
+              <div className="mt-[20px] lg:mt-[30px]">
+                <div
+                  className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
+                  tabIndex={0}
+                >
+                  <input
+                    id="bitcoinHash"
+                    type="text"
+                    placeholder="Enter Transaction Hash"
+                    className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
+                    {...form.register("bitcoinHash")}
+                  />
+                </div>
+                {form.formState.errors.bitcoinHash && (
+                  <p className="text-sm text-red-500 mt-[10px] ml-[10px]">
+                    {form.formState.errors.bitcoinHash.message}
+                  </p>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="mt-[20px] lg:mt-[30px]">
+              <div
+                className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
+                tabIndex={0}
+              >
+                <input
+                  id="bitcoinAddress"
+                  type="text"
+                  placeholder="Enter Bitcoin Address (optional)"
+                  className="w-full h-full px-4 py-2 bg-black rounded-[20px] text-white focus:outline-none transition-shadow"
+                  {...form.register("bitcoinAddress")}
+                />
+              </div>
+              {form.formState.errors.bitcoinAddress && (
+                <p className="text-sm text-red-500 mt-[10px] ml-[10px]">
+                  {form.formState.errors.bitcoinAddress.message}
+                </p>
+              )}
             </div>
-            {form.formState.errors.bitcoinAddress && (
-              <p className="text-sm text-red-500 mt-[10px] ml-[10px]">
-                {form.formState.errors.bitcoinAddress.message}
-              </p>
-            )}
-          </div>
+          )}
           <div className="mt-[20px] lg:mt-[30px]">
             <div
               className="flex flex-col space-y-2 rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] mt-[10px] lg:mt-[20px]"
@@ -364,16 +417,19 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             )}
           </div>
           <div className="mt-[20px] lg:mt-[30px] w-[60%] lg:w-[50%] mx-auto">
-            <SubmitButton />
-            {/* <EVMConnectWallet size="large" /> */}
-            {/* {blockchain === "solana" ? (
-              publicKey ? null : (
-                <SolanaConnect />
+            {blockchain === "solana" ? (
+              publicKey ? (
+                <SubmitButton submittingTransaction={submittingTransaction} />
+              ) : (
+                <SolanaConnect size="large" />
               )
-            ) : blockchain ===
-              "bitcoin" ? null : connectedWalletAddress ? null : (
-              <EVMConnectWallet />
-            )} */}
+            ) : blockchain === "bitcoin" ? (
+              <SubmitButton submittingTransaction={submittingTransaction} />
+            ) : connectedWalletAddress ? (
+              <SubmitButton submittingTransaction={submittingTransaction} />
+            ) : (
+              <EVMConnectWallet size="large" />
+            )}
           </div>
           <div className=" mt-[20px] lg:mt-[30px] w-[60%] lg:w-[50%] mx-auto">
             <Link href={"/contact"} className=" ">
@@ -393,14 +449,18 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   );
 }
 
-const SubmitButton = () => {
+const SubmitButton = ({
+  submittingTransaction,
+}: {
+  submittingTransaction: any;
+}) => {
   return (
     <div className=" w-full  gradient-button-bg p-[2px] rounded-full">
       <Button
         type="submit"
         className="w-full h-full py-3 rounded-full text-md lg:text-lg gradient-button transition-all duration-300"
       >
-        Submit Transaction
+        {submittingTransaction ? <Loader speed={1} /> : "Submit Transaction"}
       </Button>
     </div>
   );

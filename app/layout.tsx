@@ -22,6 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" type="image/png" href="./assets/BTCBLogo.png" />
+      </head>
       <body className={dmSans.className}>
         <ThemeProvider
           attribute="class"

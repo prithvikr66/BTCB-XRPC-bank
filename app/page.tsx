@@ -22,7 +22,7 @@ export default function Home() {
                 height="100%"
               ></iframe>
               <Navbar chain={chain} />
-              <div className=" min-h-screen w-full bg-black ">
+              <div className=" min-h-screen w-full bg-black   ">
                 <CryptoForm setChain={setChain} />
               </div>
             </div>
