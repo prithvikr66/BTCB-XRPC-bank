@@ -1,6 +1,26 @@
 import { connectDB } from "../submit/route";
-import { PhaseDetails } from "../phaseDetails/route";
+import mongoose, { Schema, Document } from "mongoose";
 import { NextResponse } from "next/server";
+export interface IPhaseDetails extends Document {
+  currentPhase: number;
+  tokensSold: number;
+  tokensRemaining: number;
+  pricePerToken: number;
+  totalRaised: number;
+}
+
+const phaseSchema = new Schema<IPhaseDetails>({
+  currentPhase: { type: Number, required: true },
+  tokensSold: { type: Number, required: true },
+  tokensRemaining: { type: Number, required: true },
+  pricePerToken: { type: Number, required: true },
+  totalRaised: { type: Number, required: true },
+});
+
+const PhaseDetails =
+  mongoose.models.PhaseDetails ||
+  mongoose.model<IPhaseDetails>("PhaseDetails", phaseSchema);
+
 const PHASES = [
   { tokens: 3750000, price: 0.11 },
   { tokens: 3750000, price: 0.12 },
