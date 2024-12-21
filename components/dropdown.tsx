@@ -15,6 +15,7 @@ const Dropdown = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectedImg, setSelectedImg] = useState("");
 
   const handleSelect = (value: any, label?: any) => {
     blockchain ? setSelected(label) : setSelected(value);
@@ -48,7 +49,16 @@ const Dropdown = ({
         } text-white rounded-full transition focus:outline-none`}
       >
         <div className="w-full text-lg text-[#8F8F8F] opacity text-center h-full rounded-full bg-black px-4 py-2 flex justify-between items-center">
-          {selected || label}
+          <div className=" flex items-center gap-[10px]">
+            {selectedImg && (
+              <img
+                src={selectedImg }
+                height={"30"}
+                width="30"
+              />
+            )}
+            {selected || label}
+          </div>
           <svg
             className={`w-5 h-5 transition-transform ${
               isOpen ? "rotate-180" : "rotate-0"
@@ -76,12 +86,13 @@ const Dropdown = ({
                 type="button"
                 key={blockchain ? option.label : option.symbol}
                 className=" flex items-center gap-[20px] w-full text-left rounded-[20px] px-4 py-2 text-white hover:bg-[#121212]  transition"
-                onClick={() =>
+                onClick={() => {
+                  setSelectedImg(option.img);
                   handleSelect(
                     blockchain ? option.value : option.symbol,
                     blockchain ? option.label : ""
-                  )
-                }
+                  );
+                }}
               >
                 <img src={option.img} height={"30"} width="30" />
 

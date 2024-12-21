@@ -35,7 +35,20 @@ export const BLOCKCHAIN_OPTIONS = [
     img: "https://cdn-icons-png.flaticon.com/128/14446/14446121.png",
   },
 ] as const;
+export type TOKEN = {
+  symbol: string;
+  img: string;
+};
 
+type BlockchainTokens = {
+  ethereum: TOKEN[];
+  solana: TOKEN[];
+  bnb: TOKEN[];
+  arbitrum: TOKEN[];
+  bitcoin: TOKEN[];
+  base: TOKEN[];
+  avalanche: TOKEN[];
+};
 export const TOKENS = {
   ethereum: [
     {

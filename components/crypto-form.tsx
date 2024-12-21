@@ -13,6 +13,7 @@ import {
   type Blockchain,
   TOKEN_ADDRESSES,
   PhaseDetailsResponse,
+  TOKEN,
 } from "@/lib/constants";
 import { FormValues, formSchema } from "@/lib/validations/form";
 import { ethers } from "ethers";
@@ -36,7 +37,7 @@ const hashedPromoCodes = dummyPromoCodes.map((code) =>
   createHash("sha256").update(code).digest("hex")
 );
 export function CryptoForm({ setChain }: { setChain: any }) {
-  const [availableTokens, setAvailableTokens] = useState<string[]>([]);
+  const [availableTokens, setAvailableTokens] = useState<TOKEN[]>([]);
   const [submittingTransaction, setSubmittingTransaction] = useState(false);
   const [btcbAmount, setBtcbAmount] = useState(0);
   const [phaseDetails, setPhaseDetails] = useState<PhaseDetailsResponse>();
@@ -51,7 +52,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       blockchain: "ethereum",
-      token: "ETH",
+      token: "",
       amount: 0,
       promoCode: "",
       bitcoinAddress: "",
@@ -64,22 +65,26 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
   const token = useWatch({ control: form.control, name: "token" });
   const amount = useWatch({ control: form.control, name: "amount" });
-  const currentTokenPrice = 0.11;
+
   useEffect(() => {
-    if (token === "USDT" || token === "USDC") {
-      const totalPrice = 1 * amount;
-      const tokens = totalPrice / currentTokenPrice;
-      setBtcbAmount(Math.round(tokens));
-    } else {
-      axios
-        .get(`https://api.binance.com/api/v3/ticker/price?symbol=${token}USDT`)
-        .then((response) => {
-          const price = parseFloat(response.data.price);
-          const totalPrice = price * amount;
-          const tokens = totalPrice / currentTokenPrice;
-          setBtcbAmount(Math.round(tokens));
-        })
-        .catch((error) => console.error("Error fetching price:", error));
+    if (phaseDetails) {
+      if (token === "USDT" || token === "USDC") {
+        const totalPrice = 1 * amount;
+        const tokens = totalPrice / phaseDetails?.pricePerToken;
+        setBtcbAmount(Math.round(tokens));
+      } else {
+        axios
+          .get(
+            `https://api.binance.com/api/v3/ticker/price?symbol=${token}USDT`
+          )
+          .then((response) => {
+            const price = parseFloat(response.data.price);
+            const totalPrice = price * amount;
+            const tokens = Number(totalPrice / phaseDetails?.pricePerToken);
+            setBtcbAmount(Number(tokens.toFixed(4)));
+          })
+          .catch((error) => console.error("Error fetching price:", error));
+      }
     }
   }, [token, amount]);
   setChain(blockchain);
@@ -104,8 +109,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   useEffect(() => {
     const blockchain = form.watch("blockchain") as Blockchain;
     if (blockchain) {
-      setAvailableTokens(TOKENS[blockchain]?.map((token) => token.symbol) || []);
-
+      setAvailableTokens([...TOKENS[blockchain]] || []);
       form.setValue("token", "");
     }
   }, [form.watch("blockchain")]);
@@ -304,6 +308,16 @@ export function CryptoForm({ setChain }: { setChain: any }) {
                 className="flex flex-col rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] "
                 tabIndex={0}
               >
+                {/* {blockchain && token && (
+                  <img
+                    src={
+                      TOKENS[blockchain]?.find((t: any) => t.symbol === token)
+                        ?.img
+                    }
+                    height={"30"}
+                    width="30"
+                  />
+                )} */}
                 <input
                   id="amount"
                   type="number"
@@ -494,10 +508,10 @@ const SubmitButton = ({
   submittingTransaction: any;
 }) => {
   return (
-    <div className=" w-full  gradient-button-bg p-[2px] rounded-full">
+    <div className=" w-full bg-[#FC2900] p-[2px] rounded-full">
       <Button
         type="submit"
-        className="w-full h-full py-3 rounded-full text-md lg:text-lg gradient-button transition-all duration-300"
+        className="w-full h-full py-3 rounded-full text-md lg:text-lg bf-[#FC2900] transition-all duration-300"
       >
         {submittingTransaction ? <Loader speed={1} /> : "Submit Transaction"}
       </Button>

@@ -14,7 +14,7 @@
     #9f53ff 258.75deg,
     #ff98e2 360deg
   );
-  -webkit-background-clip: text; 
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 700;
   margin-top: 1rem;
@@ -41,7 +41,7 @@
   );
 }
 .gradient-input:focus-within {
-  background: white
+  background: white;
 }
 .custom-wallet-button {
   background: linear-gradient(to right, #4e54c8, #8f94fb);
@@ -55,9 +55,7 @@
   transition: all 0.3s ease-in-out;
 }
 
-
 /* In your CSS file */
 .text-glow {
-  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
-
