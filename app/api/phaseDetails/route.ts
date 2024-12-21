@@ -10,7 +10,7 @@ export interface IPhaseDetails extends Document {
   totalRaised: number;
 }
 
-const phaseSchema = new Schema({
+const phaseSchema = new Schema<IPhaseDetails>({
   currentPhase: { type: Number, required: true },
   tokensSold: { type: Number, required: true },
   tokensRemaining: { type: Number, required: true },
@@ -38,7 +38,7 @@ export async function GET(req: Request) {
       phaseDetails;
 
     return NextResponse.json(
-      { currentPhase, pricePerToken, tokensSold, totalRaised,tokensRemaining },
+      { currentPhase, pricePerToken, tokensSold, totalRaised, tokensRemaining },
       { status: 200 }
     );
   } catch (error: any) {
