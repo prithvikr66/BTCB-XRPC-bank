@@ -1,21 +1,120 @@
 export const BLOCKCHAIN_OPTIONS = [
-  { value: "ethereum", label: "Ethereum" },
-  { value: "solana", label: "Solana" },
-  { value: "bnb", label: "BNB" },
-  { value: "arbitrum", label: "Arbitrum" },
-  { value: "bitcoin", label: "Bitcoin" },
-  { value: "base", label: "Base" },
-  { value: "avalanche", label: "Avalanche" },
+  {
+    value: "ethereum",
+    label: "Ethereum",
+    img: "https://cdn-icons-png.flaticon.com/128/14446/14446160.png",
+  },
+  {
+    value: "solana",
+    label: "Solana",
+    img: "https://cdn-icons-png.flaticon.com/128/14446/14446237.png",
+  },
+  {
+    value: "bnb",
+    label: "BNB",
+    img: "https://cdn-icons-png.flaticon.com/128/14446/14446125.png",
+  },
+  {
+    value: "arbitrum",
+    label: "Arbitrum",
+    img: "https://cdn-icons-png.flaticon.com/128/15208/15208284.png",
+  },
+  {
+    value: "bitcoin",
+    label: "Bitcoin",
+    img: "https://cdn-icons-png.flaticon.com/128/5968/5968260.png",
+  },
+  {
+    value: "base",
+    label: "Base",
+    img: "https://cdn-icons-png.flaticon.com/128/14446/14446237.png",
+  },
+  {
+    value: "avalanche",
+    label: "Avalanche",
+    img: "https://cdn-icons-png.flaticon.com/128/14446/14446121.png",
+  },
 ] as const;
 
 export const TOKENS = {
-  ethereum: ["ETH", "USDT", "USDC"],
-  solana: ["SOL", "USDT", "USDC"],
-  bnb: ["BNB", "USDC"],
-  arbitrum: ["ETH", "USDC"],
-  bitcoin: ["BTC"],
-  base: ["ETH", "USDC"],
-  avalanche: ["AVAX", "USDT", "USDC"],
+  ethereum: [
+    {
+      symbol: "ETH",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446160.png",
+    },
+    {
+      symbol: "USDT",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446252.png",
+    },
+    {
+      symbol: "USDC",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
+  solana: [
+    {
+      symbol: "SOL",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446237.png",
+    },
+    {
+      symbol: "USDT",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446252.png",
+    },
+    {
+      symbol: "USDC",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
+  bnb: [
+    {
+      symbol: "BNB",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446125.png",
+    },
+    {
+      symbol: "USDC",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
+  arbitrum: [
+    {
+      symbol: "ETH",
+      img: "https://cdn-icons-png.flaticon.com/128/15208/15208284.png",
+    },
+    {
+      symbol: "USDC",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
+  bitcoin: [
+    {
+      symbol: "BTC",
+      img: "https://cdn-icons-png.flaticon.com/128/5968/5968260.png",
+    },
+  ],
+  base: [
+    {
+      symbol: "ETH",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446160.png",
+    },
+    {
+      symbol: "USDC",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
+  avalanche: [
+    {
+      symbol: "AVAX",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446121.png",
+    },
+    {
+      symbol: "USDT",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446252.png",
+    },
+    {
+      symbol: "USDC",
+      img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
 } as const;
 
 export const CHAINS = {
@@ -65,3 +164,11 @@ export const TOKEN_ADDRESSES: TokenAddressMap = {
 
 export type Blockchain = keyof typeof TOKENS;
 export type Token = (typeof TOKENS)[Blockchain][number];
+
+export type PhaseDetailsResponse = {
+  currentPhase: number;
+  pricePerToken: number;
+  tokensSold: number;
+  totalRaised: number;
+  tokensRemaining: number;
+};

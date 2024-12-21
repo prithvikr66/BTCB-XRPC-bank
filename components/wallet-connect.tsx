@@ -10,11 +10,11 @@ export default function EVMConnectWallet({
   size: "small" | "large";
 }) {
   return (
-    <div className="w-full flex justify-center items-center gradient-button-bg p-[2px] rounded-full">
+    <div className="w-full flex justify-center items-center bg-[#FC2900] p-[2px] rounded-full">
       <ConnectWallet
         theme="dark"
         btnTitle="Connect Wallet"
-        className={`!h-full !w-full !text-white hover:!text-black !bg-black gradient-button  !font-semibold   !rounded-full !transition-all !duration-300  ${
+        className={`!h-full !w-full !text-white  !bg-[#FC2900]  !font-semibold  !rounded-full !transition-all !duration-300  ${
           size === "small" ? "!text-md !py-3 !px-6" : "text-md !py-3 !px-6"
         } `}
       />
@@ -32,14 +32,7 @@ export const SolanaConnect = ({ size }: { size: "small" | "large" }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: `conic-gradient(
-      from 180deg at 50% 50%,
-          #ff98e2,
-          #ffc876 35.77deg,
-          #79fff7 153.75deg,
-          #9f53ff 258.75deg,
-          #ff98e2 360deg
-        )`,
+        background: "#FC2900",
         padding: "2px",
         borderRadius: "9999px",
       }}
@@ -49,7 +42,7 @@ export const SolanaConnect = ({ size }: { size: "small" | "large" }) => {
           height: "100%",
           width: "100%",
           color: "white",
-          backgroundColor: "black",
+          backgroundColor: "#FC2900",
           fontWeight: "600",
           borderRadius: "9999px",
           transition: "all 0.3s ease-in-out",

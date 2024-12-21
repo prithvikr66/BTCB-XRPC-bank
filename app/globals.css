@@ -41,14 +41,7 @@
   );
 }
 .gradient-input:focus-within {
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #ff98e2,
-    #ffc876 35.77deg,
-    #79fff7 153.75deg,
-    #9f53ff 258.75deg,
-    #ff98e2 360deg
-  );
+  background: white
 }
 .custom-wallet-button {
   background: linear-gradient(to right, #4e54c8, #8f94fb);
@@ -63,5 +56,8 @@
 }
 
 
-
+/* In your CSS file */
+.text-glow {
+  text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
 

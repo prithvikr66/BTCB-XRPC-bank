@@ -13,9 +13,9 @@ const Dropdown = ({
   blockchain: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const handleSelect = (value: any, label?: any) => {
     blockchain ? setSelected(label) : setSelected(value);
     onChange(value);
@@ -44,7 +44,7 @@ const Dropdown = ({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={`w-full p-[2px] ${
-          isOpen ? "gradient-button-bg" : "bg-[#333232]"
+          isOpen ? "bg-white" : "bg-[#333232]"
         } text-white rounded-full transition focus:outline-none`}
       >
         <div className="w-full text-lg text-[#8F8F8F] opacity text-center h-full rounded-full bg-black px-4 py-2 flex justify-between items-center">
@@ -69,21 +69,23 @@ const Dropdown = ({
       </button>
 
       {isOpen && (
-        <div className="absolute gradient-button-bg p-[2px] mt-2 w-full rounded-[20px] z-10">
+        <div className="absolute bg-white p-[2px] mt-2 w-full rounded-[20px] z-10">
           <div className="bg-black h-full w-full rounded-[20px]">
             {options.map((option: any) => (
               <button
                 type="button"
-                key={blockchain ? option.lable : option}
-                className="block w-full text-left rounded-[20px] px-4 py-2 text-white hover:bg-[#121212]  transition"
+                key={blockchain ? option.label : option.symbol}
+                className=" flex items-center gap-[20px] w-full text-left rounded-[20px] px-4 py-2 text-white hover:bg-[#121212]  transition"
                 onClick={() =>
                   handleSelect(
-                    blockchain ? option.value : option,
+                    blockchain ? option.value : option.symbol,
                     blockchain ? option.label : ""
                   )
                 }
               >
-                {blockchain ? option.label : option}
+                <img src={option.img} height={"30"} width="30" />
+
+                {blockchain ? option.label : option.symbol}
               </button>
             ))}
           </div>

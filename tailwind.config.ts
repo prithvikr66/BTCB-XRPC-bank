@@ -14,6 +14,9 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      textShadow: {
+        glow: "0 0 10px rgba(255,255,255,0.5)",
+      },
 
       borderRadius: {
         lg: "var(--radius)",

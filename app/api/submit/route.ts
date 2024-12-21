@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 
 const uri =
-  "mongodb+srv://pkunofficial66:8mSULcJbjsYgCLBC@cluster0.uqoxq.mongodb.net/crypto-transactions";
+  "mongodb+srv://pkunofficial66:eggLes8UNimoqctC@cluster0.slhhz.mongodb.net/";
 
 const transactionSchema = new mongoose.Schema({
   blockchain: { type: String, required: true },
@@ -22,7 +22,7 @@ const Transaction =
   mongoose.model("Transaction", transactionSchema);
 
 let isConnected = false;
-async function connectDB() {
+export async function connectDB() {
   if (isConnected) return;
   try {
     await mongoose.connect(uri);
