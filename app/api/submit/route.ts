@@ -22,6 +22,7 @@ const Transaction =
   mongoose.model("Transaction", transactionSchema);
 
 let isConnected = false;
+
 export async function connectDB() {
   if (isConnected) return;
   try {

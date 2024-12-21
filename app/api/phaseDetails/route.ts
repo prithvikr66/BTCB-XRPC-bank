@@ -18,7 +18,7 @@ const phaseSchema = new Schema<IPhaseDetails>({
   totalRaised: { type: Number, required: true },
 });
 
-export const PhaseDetails =
+const PhaseDetails =
   mongoose.models.PhaseDetails ||
   mongoose.model<IPhaseDetails>("PhaseDetails", phaseSchema);
 
@@ -49,3 +49,4 @@ export async function GET(req: Request) {
     );
   }
 }
+export {PhaseDetails}
