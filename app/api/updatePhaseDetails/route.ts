@@ -1,4 +1,4 @@
-import { connectDB } from "../submit/route";
+import { connectDB } from "@/lib/utils";
 import mongoose, { Schema, Document } from "mongoose";
 import { NextResponse } from "next/server";
 export interface IPhaseDetails extends Document {
@@ -35,6 +35,8 @@ const PHASES = [
   { tokens: 3750000, price: 0.28 },
   { tokens: 3750000, price: 0.32 },
 ];
+
+
 
 export async function POST(req: Request) {
   await connectDB();

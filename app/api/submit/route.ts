@@ -1,9 +1,9 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
+import { connectDB } from "@/lib/utils";
 
-const uri =
-  "mongodb+srv://pkunofficial66:eggLes8UNimoqctC@cluster0.slhhz.mongodb.net/";
+
 
 const transactionSchema = new mongoose.Schema({
   blockchain: { type: String, required: true },
@@ -21,19 +21,7 @@ const Transaction =
   mongoose.models.Transaction ||
   mongoose.model("Transaction", transactionSchema);
 
-let isConnected = false;
 
-export async function connectDB() {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(uri);
-    isConnected = true;
-    console.log("Connected to MongoDB via Mongoose");
-  } catch (error) {
-    console.error("Failed to connect to MongoDB:", error);
-    throw new Error("Database connection failed");
-  }
-}
 
 export async function POST(req: any) {
   try {

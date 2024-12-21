@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { FormValues } from "./validations/form";
+import mongoose from "mongoose";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,3 +40,18 @@ export const fetchPhaseDetails = async () => {
   if (!response.ok) throw new Error("Failed to fetch phase details");
   return response.json();
 };
+const uri =
+  "mongodb+srv://pkunofficial66:eggLes8UNimoqctC@cluster0.slhhz.mongodb.net/";
+
+let isConnected = false;
+export async function connectDB() {
+  if (isConnected) return;
+  try {
+    await mongoose.connect(uri);
+    isConnected = true;
+    console.log("Connected to MongoDB via Mongoose");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB:", error);
+    throw new Error("Database connection failed");
+  }
+}

@@ -1,5 +1,5 @@
+import { connectDB } from "@/lib/utils";
 import mongoose, { Schema, Document } from "mongoose";
-import { connectDB } from "../submit/route";
 import { NextResponse } from "next/server";
 
 export interface IPhaseDetails extends Document {
