@@ -104,7 +104,8 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   useEffect(() => {
     const blockchain = form.watch("blockchain") as Blockchain;
     if (blockchain) {
-      setAvailableTokens([...TOKENS[blockchain]] || []);
+      setAvailableTokens(TOKENS[blockchain]?.map((token) => token.symbol) || []);
+
       form.setValue("token", "");
     }
   }, [form.watch("blockchain")]);
