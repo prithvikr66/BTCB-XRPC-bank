@@ -6,6 +6,7 @@ import { useState } from "react";
 import { SolanaWalletProvider } from "@/hooks/wallet-provider";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 export default function Home() {
   const [queryClient] = useState(() => new QueryClient());
   const [chain, setChain] = useState("ethereum");
@@ -17,7 +18,6 @@ export default function Home() {
             <div className=" bg-black">
               <iframe
                 src="https://my.spline.design/prismcoin-0656bc3077c7482cdc06669443305d2c/"
-                // frameborder="0"
                 width="100%"
                 height="100%"
               ></iframe>
@@ -25,6 +25,7 @@ export default function Home() {
               <div className=" min-h-screen w-full bg-black   ">
                 <CryptoForm setChain={setChain} />
               </div>
+              <Footer />
             </div>
           </Suspense>
         </ThirdwebProvider>

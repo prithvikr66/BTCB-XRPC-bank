@@ -34,6 +34,11 @@ export const BLOCKCHAIN_OPTIONS = [
     label: "Avalanche",
     img: "https://cdn-icons-png.flaticon.com/128/14446/14446121.png",
   },
+  {
+    value: "xrpl",
+    label: "XRPL",
+    img: "https://cdn-icons-png.flaticon.com/128/4821/4821657.png",
+  },
 ] as const;
 export type TOKEN = {
   symbol: string;
@@ -48,6 +53,7 @@ type BlockchainTokens = {
   bitcoin: TOKEN[];
   base: TOKEN[];
   avalanche: TOKEN[];
+  xrpl: TOKEN[];
 };
 export const TOKENS = {
   ethereum: [
@@ -126,6 +132,16 @@ export const TOKENS = {
     {
       symbol: "USDC",
       img: "https://cdn-icons-png.flaticon.com/128/14446/14446284.png",
+    },
+  ],
+  xrpl: [
+    {
+      symbol: "XRP",
+      img: "https://cdn-icons-png.flaticon.com/128/4821/4821657.png",
+    },
+    {
+      symbol: "RLUSD",
+      img: "https://cdn-icons-png.flaticon.com/128/10485/10485512.png",
     },
   ],
 } as const;

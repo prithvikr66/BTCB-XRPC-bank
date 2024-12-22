@@ -73,6 +73,7 @@
     "next-themes": "^0.3.0",
     "pino-pretty": "^13.0.0",
     "postcss": "8.4.30",
+    "qrcode": "^1.5.4",
     "react": "18.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "18.2.0",
@@ -89,12 +90,14 @@
     "vaul": "^0.9.9",
     "viem": "^2.21.54",
     "wagmi": "^2.13.4",
+    "xrpl": "^4.0.0",
     "zod": "^3.23.8"
   },
   "overrides": {
     "@tanstack/react-query": "^4.36.1"
   },
   "devDependencies": {
+    "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.14"
   }
 }
