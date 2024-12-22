@@ -18,7 +18,7 @@ import {
 import { FormValues, formSchema } from "@/lib/validations/form";
 import { ethers } from "ethers";
 import { useSDK, useAddress, useChainId } from "@thirdweb-dev/react";
-import EVMConnectWallet, { SolanaConnect, XRPWalletConnect } from "./wallet-connect";
+import EVMConnectWallet, { SolanaConnect } from "./wallet-connect";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { fetchPhaseDetails, saveToDB, updatePhaseDetails } from "@/lib/utils";
 import { handleSolTxns } from "@/lib/sol-txns";
