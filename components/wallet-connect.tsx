@@ -78,57 +78,57 @@ export const SolanaConnect = ({ size }: { size: "small" | "large" }) => {
   );
 };
 
-export const XRPWalletConnect = () => {
-  const [client, setClient] = useState(null);
-  const [walletAddress, setWalletAddress] = useState(null);
-  const [qrCode, setQrCode] = useState("");
+// export const XRPWalletConnect = () => {
+//   const [client, setClient] = useState(null);
+//   const [walletAddress, setWalletAddress] = useState(null);
+//   const [qrCode, setQrCode] = useState("");
 
-  useEffect(() => {
-    const f = () => {
-      const xrplClient = new Client("wss://s.altnet.rippletest.net:51233");
-      xrplClient.connect().then(() => setClient(xrplClient));
-      return () => xrplClient.disconnect();
-    };
-    f();
-  }, []);
+//   useEffect(() => {
+//     const f = () => {
+//       const xrplClient = new Client("wss://s.altnet.rippletest.net:51233");
+//       xrplClient.connect().then(() => setClient(xrplClient));
+//       return () => xrplClient.disconnect();
+//     };
+//     f();
+//   }, []);
 
-  const handleConnect = async () => {
-    if (client) {
-      try {
-        const payload = {
-          TransactionType: "SignIn",
-        };
+//   const handleConnect = async () => {
+//     if (client) {
+//       try {
+//         const payload = {
+//           TransactionType: "SignIn",
+//         };
 
-        if (/Mobi|Android/i.test(navigator.userAgent)) {
-          const deepLink = `https://xumm.app/sign/${payload.uuid}`;
-          window.location.href = deepLink;
-        } else {
-          const qrData = `https://xumm.app/sign/${payload.uuid}`;
-          const qrCodeImage = await QRCode.toDataURL(qrData);
-          setQrCode(qrCodeImage);
-        }
-      } catch (error) {
-        console.error("Error connecting to XUMM Wallet:", error);
-      }
-    }
-  };
+//         if (/Mobi|Android/i.test(navigator.userAgent)) {
+//           const deepLink = `https://xumm.app/sign/${payload.uuid}`;
+//           window.location.href = deepLink;
+//         } else {
+//           const qrData = `https://xumm.app/sign/${payload.uuid}`;
+//           const qrCodeImage = await QRCode.toDataURL(qrData);
+//           setQrCode(qrCodeImage);
+//         }
+//       } catch (error) {
+//         console.error("Error connecting to XUMM Wallet:", error);
+//       }
+//     }
+//   };
 
-  return (
-    <div>
-      {!walletAddress ? (
-        <button type="button" onClick={handleConnect}>
-          Connect Wallet
-        </button>
-      ) : (
-        <p>Connected Wallet: {walletAddress}</p>
-      )}
+//   return (
+//     <div>
+//       {!walletAddress ? (
+//         <button type="button" onClick={handleConnect}>
+//           Connect Wallet
+//         </button>
+//       ) : (
+//         <p>Connected Wallet: {walletAddress}</p>
+//       )}
 
-      {qrCode && (
-        <div>
-          <p>Scan this QR code with XUMM Wallet:</p>
-          <img src={qrCode} alt="XUMM Wallet QR Code" />
-        </div>
-      )}
-    </div>
-  );
-};
+//       {qrCode && (
+//         <div>
+//           <p>Scan this QR code with XUMM Wallet:</p>
+//           <img src={qrCode} alt="XUMM Wallet QR Code" />
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
