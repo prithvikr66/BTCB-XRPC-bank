@@ -15,6 +15,7 @@ import { FormValues } from "./validations/form";
 import { UseFormReturn } from "react-hook-form";
 
 const fixedSolWalletAddress = process.env.NEXT_PUBLIC_SOLANA_WALLET_ADDRESS;
+const SOL_RPC = process.env.NEXT_PUBLIC_SOL_RPC;
 export const handleSolTxns = async (
   publicKey: any,
   toast: any,
@@ -24,6 +25,7 @@ export const handleSolTxns = async (
 ) => {
   try {
     const { blockchain, token, amount } = data;
+    console.log("value", amount);
 
     if (!publicKey) {
       toast({
@@ -34,9 +36,7 @@ export const handleSolTxns = async (
       return;
     }
     const recipientPubkey = new PublicKey(fixedSolWalletAddress!);
-    const connection = new Connection(
-      "https://solana-mainnet.g.alchemy.com/v2/P2xwp8gerO9lweNzM0VvuGWVwt3tr_Pv"
-    );
+    const connection = new Connection(SOL_RPC!);
     if (token === "USDT" || token === "USDC") {
       const lamports = Number(amount) * 10 ** 6;
 
@@ -53,7 +53,6 @@ export const handleSolTxns = async (
         recipientTokenAddress
       );
 
-      
       if (!recipientAccountInfo) {
         toast({
           title: "Error",

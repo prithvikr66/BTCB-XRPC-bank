@@ -13,6 +13,9 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "BTCB Bank Presale",
   description: "Presale page",
+  icons: {
+    icon: "/BTCBLogo.png",
+  },
 };
 
 export default function RootLayout({

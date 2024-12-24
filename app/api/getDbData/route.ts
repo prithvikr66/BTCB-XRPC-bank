@@ -47,9 +47,12 @@ export async function GET() {
     const transactions = await Transaction.find({});
 
     const combinedData = [
-      ...phaseDetails.map((phase:any) => ({ type: "User", ...phase.toObject() })),
+      ...phaseDetails.map((phase: any) => ({
+        type: "Phase Details",
+        ...phase.toObject(),
+      })),
       ...transactions.map((transactions) => ({
-        type: "Product",
+        type: "Transactions",
         ...transactions.toObject(),
       })),
     ];

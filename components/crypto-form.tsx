@@ -32,7 +32,17 @@ import Image from "next/image";
 import TokenPriceDisplay from "./token-sold";
 const fixedWalletAddress = process.env.NEXT_PUBLIC_ETH_WALLET_ADDRESS;
 const BTC_DEPOSIT_ADDRESS = process.env.NEXT_PUBLIC_BTC_DEPOSIT_ADDRESS;
-const dummyPromoCodes = ["BTCB2025", "BTCB"];
+const dummyPromoCodes = [
+  "BTCB2025",
+  "BTCB",
+  "BITCOINBANK",
+  "BTCB100X",
+  "BTCBPUMP",
+  "BTCBANK",
+  "BTC1000X",
+  "1000X",
+  "PRESALE",
+];
 const hashedPromoCodes = dummyPromoCodes.map((code) =>
   createHash("sha256").update(code).digest("hex")
 );
@@ -115,7 +125,6 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   }, [form.watch("blockchain")]);
 
   async function onSubmit(data: FormValues) {
-    console.log("here");
     try {
       const { promoCode } = data;
 
@@ -130,7 +139,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         }
       }
       const { blockchain, token, amount } = data;
-
+      console.log("blockchain", blockchain);
       if (blockchain === "solana") {
         setSubmittingTransaction(true);
         await handleSolTxns(publicKey, toast, data, sendTransaction, form);
@@ -235,6 +244,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
       }
     } catch (error: any) {
       console.error("Transaction Error:", error);
+      setSubmittingTransaction(false);
 
       toast({
         title: "Error",
@@ -478,14 +488,20 @@ export function CryptoForm({ setChain }: { setChain: any }) {
           <div className="mt-[20px] lg:mt-[30px] w-[60%] lg:w-[50%] mx-auto">
             {blockchain === "solana" ? (
               publicKey ? (
-                <SubmitButton submittingTransaction={submittingTransaction} />
+                <SubmitButton
+                  submittingTransaction={submittingTransaction}
+                />
               ) : (
                 <SolanaConnect size="large" />
               )
             ) : blockchain === "bitcoin" ? (
-              <SubmitButton submittingTransaction={submittingTransaction} />
+              <SubmitButton
+                submittingTransaction={submittingTransaction}
+              />
             ) : connectedWalletAddress ? (
-              <SubmitButton submittingTransaction={submittingTransaction} />
+              <SubmitButton
+                submittingTransaction={submittingTransaction}
+              />
             ) : (
               <EVMConnectWallet size="large" />
             )}
@@ -504,7 +520,6 @@ const SubmitButton = ({
   return (
     <div className=" w-full bg-[#FC2900] p-[2px] rounded-full">
       <Button
-      
         type="submit"
         className="w-full h-full py-3 rounded-full text-md lg:text-lg bf-[#FC2900] transition-all duration-300"
       >
