@@ -1,5 +1,8 @@
 import * as z from "zod";
 
+const bitcoinAddressRegex = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/; 
+const bitcoinHashRegex = /^[A-Fa-f0-9]{64}$/; 
+
 export const formSchema = z
   .object({
     blockchain: z.string({
@@ -14,11 +17,16 @@ export const formSchema = z
       })
       .positive("Amount must be positive"),
     promoCode: z.string().optional(),
-    bitcoinAddress: z.string().optional(),
+    bitcoinAddress: z
+      .string()
+      .regex(bitcoinAddressRegex, "Invalid Bitcoin address")
+      .optional(),
     xrpAddress: z.string().optional(),
-    bitcoinHash: z.string({
-      required_error: "Please Enter the transaction hash",
-    }),
+    bitcoinHash: z
+      .string({
+        required_error: "Please enter the transaction hash",
+      })
+      .regex(bitcoinHashRegex, "Invalid Bitcoin transaction hash"),
     email: z.string().email("Invalid email address").optional(),
     telegramId: z.string().optional(),
   })

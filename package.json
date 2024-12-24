@@ -51,10 +51,15 @@
     "@thirdweb-dev/sdk": "^4.0.99",
     "@types/node": "20.6.2",
     "@types/react-dom": "18.2.7",
+    "@walletconnect/client": "^1.8.0",
     "@walletconnect/modal": "^2.7.0",
+    "@walletconnect/qrcode-modal": "^1.8.0",
     "@web3modal/ethereum": "^2.7.1",
     "@web3modal/react": "^2.7.1",
+    "@web3modal/standalone": "^2.4.3",
     "@web3modal/wagmi": "^5.1.11",
+    "@xrpl-walletconnect/core": "^0.1.0",
+    "@xrpl-walletconnect/react": "^0.1.1",
     "autoprefixer": "10.4.15",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
@@ -66,8 +71,9 @@
     "eslint-config-next": "13.5.1",
     "ethers": "^5.7.2",
     "input-otp": "^1.2.4",
+    "json2csv": "^6.0.0-alpha.2",
     "lucide-react": "^0.446.0",
-    "mongodb": "^5.7.0",
+    "mongodb": "^5.9.2",
     "mongoose": "^7.6.8",
     "next": "^15.1.0",
     "next-themes": "^0.3.0",
@@ -90,13 +96,14 @@
     "vaul": "^0.9.9",
     "viem": "^2.21.54",
     "wagmi": "^2.13.4",
-    "xrpl": "^4.0.0",
+    "xrpl": "^4.1.0",
     "zod": "^3.23.8"
   },
   "overrides": {
     "@tanstack/react-query": "^4.36.1"
   },
   "devDependencies": {
+    "@types/json2csv": "^5.0.7",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18.3.14"
   }

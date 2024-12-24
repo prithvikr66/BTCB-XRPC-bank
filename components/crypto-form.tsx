@@ -115,6 +115,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   }, [form.watch("blockchain")]);
 
   async function onSubmit(data: FormValues) {
+    console.log("here");
     try {
       const { promoCode } = data;
 
@@ -302,22 +303,12 @@ export function CryptoForm({ setChain }: { setChain: any }) {
               />
             </div>
           </div>
-          <div className=" flex flex-col lg:flex-row justify-between mt-[20px] lg:mt-[30px]">
+          <div className=" flex flex-col lg:items-center lg:flex-row justify-between mt-[20px] lg:mt-[30px]">
             <div className=" lg:w-[48%]">
               <div
                 className="flex flex-col rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] "
                 tabIndex={0}
               >
-                {/* {blockchain && token && (
-                  <img
-                    src={
-                      TOKENS[blockchain]?.find((t: any) => t.symbol === token)
-                        ?.img
-                    }
-                    height={"30"}
-                    width="30"
-                  />
-                )} */}
                 <input
                   id="amount"
                   type="number"
@@ -332,7 +323,10 @@ export function CryptoForm({ setChain }: { setChain: any }) {
                 </p>
               )}
             </div>
-            <div className=" lg:w-[48%] mt-[20px] lg:mt-0">
+            <div className=" text-[30px] opacity-50 flex items-center justify-center mt-[3px] lg:mt-0">
+              =
+            </div>
+            <div className=" lg:w-[48%] mt-[3px] lg:mt-0">
               <div
                 className="flex flex-col rounded-[20px] bg-[#3d3d3d] gradient-input p-[2px] "
                 tabIndex={0}
@@ -495,7 +489,6 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             ) : (
               <EVMConnectWallet size="large" />
             )}
-            {/* <XRPWalletConnect/> */}
           </div>
         </form>
       </Form>
@@ -511,6 +504,7 @@ const SubmitButton = ({
   return (
     <div className=" w-full bg-[#FC2900] p-[2px] rounded-full">
       <Button
+      
         type="submit"
         className="w-full h-full py-3 rounded-full text-md lg:text-lg bf-[#FC2900] transition-all duration-300"
       >

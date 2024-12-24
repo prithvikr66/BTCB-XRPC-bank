@@ -47,7 +47,7 @@ const TokenPriceDisplay: React.FC<DisplayType> = ({
       {/* Tokens Sold Display */}
       <div className="text-center">
         <div className="text-white text-2xl font-bold">
-          {tokensSold.toLocaleString()} BTCB
+          {tokensSold ? tokensSold.toLocaleString() : 0} BTCB
         </div>
         <div className="text-gray-400 text-sm uppercase tracking-wide">
           Tokens Sold
