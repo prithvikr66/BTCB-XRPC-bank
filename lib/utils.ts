@@ -8,6 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function saveToDB(data: FormValues, txnHash: string) {
+  console.log("form values", data);
   const response = await fetch("/api/submit", {
     method: "POST",
     headers: {
@@ -40,14 +41,13 @@ export const fetchPhaseDetails = async () => {
   if (!response.ok) throw new Error("Failed to fetch phase details");
   return response.json();
 };
-const uri =
-  "mongodb+srv://pkunofficial66:eggLes8UNimoqctC@cluster0.slhhz.mongodb.net/";
+const uri = process.env.NEXT_PUBLIC_MONGO_URI;
 
 let isConnected = false;
 export async function connectDB() {
   if (isConnected) return;
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri!);
     isConnected = true;
     console.log("Connected to MongoDB via Mongoose");
   } catch (error) {

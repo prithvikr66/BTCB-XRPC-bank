@@ -75,10 +75,9 @@ export function CryptoForm({ setChain }: { setChain: any }) {
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
   const token = useWatch({ control: form.control, name: "token" });
   const amount = useWatch({ control: form.control, name: "amount" });
-
   useEffect(() => {
     if (phaseDetails) {
-      if (token === "USDT" || token === "USDC" || token === "RLUSD") {
+      if (token === "USDT" || token === "USDC") {
         const totalPrice = 1 * amount;
         const tokens = Number(totalPrice / phaseDetails?.pricePerToken);
         setBtcbAmount(Number(tokens.toFixed(4)));
@@ -91,6 +90,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             const price = parseFloat(response.data.price);
             const totalPrice = price * amount;
             const tokens = Number(totalPrice / phaseDetails?.pricePerToken);
+            console.log("tokens",tokens)
             setBtcbAmount(Number(tokens.toFixed(4)));
           })
           .catch((error) => console.error("Error fetching price:", error));
@@ -139,7 +139,6 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         }
       }
       const { blockchain, token, amount } = data;
-      console.log("blockchain", blockchain);
       if (blockchain === "solana") {
         setSubmittingTransaction(true);
         await handleSolTxns(publicKey, toast, data, sendTransaction, form);
@@ -488,20 +487,14 @@ export function CryptoForm({ setChain }: { setChain: any }) {
           <div className="mt-[20px] lg:mt-[30px] w-[60%] lg:w-[50%] mx-auto">
             {blockchain === "solana" ? (
               publicKey ? (
-                <SubmitButton
-                  submittingTransaction={submittingTransaction}
-                />
+                <SubmitButton submittingTransaction={submittingTransaction} />
               ) : (
                 <SolanaConnect size="large" />
               )
             ) : blockchain === "bitcoin" ? (
-              <SubmitButton
-                submittingTransaction={submittingTransaction}
-              />
+              <SubmitButton submittingTransaction={submittingTransaction} />
             ) : connectedWalletAddress ? (
-              <SubmitButton
-                submittingTransaction={submittingTransaction}
-              />
+              <SubmitButton submittingTransaction={submittingTransaction} />
             ) : (
               <EVMConnectWallet size="large" />
             )}

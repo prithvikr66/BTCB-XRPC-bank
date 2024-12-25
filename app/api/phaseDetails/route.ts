@@ -28,14 +28,22 @@ export async function GET(req: Request) {
   try {
     const phaseDetails = await PhaseDetails.findOne();
     if (!phaseDetails) {
-      return NextResponse.json(
-        { message: "Phase details not found!" },
-        { status: 404 }
-      );
+      return NextResponse.json({
+        currentPhase: 1,
+        tokensSold: 0,
+        tokensRemaining: 3750000,
+        pricePerToken: 0.11,
+        totalRaised: 0,
+      });
     }
 
-    const { currentPhase, pricePerToken, tokensSold, totalRaised, tokensRemaining } =
-      phaseDetails;
+    const {
+      currentPhase,
+      pricePerToken,
+      tokensSold,
+      totalRaised,
+      tokensRemaining,
+    } = phaseDetails;
 
     return NextResponse.json(
       { currentPhase, pricePerToken, tokensSold, totalRaised, tokensRemaining },

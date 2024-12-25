@@ -2,6 +2,8 @@ import { saveToDB } from "./utils";
 
 export const handleBtcTxns = async (toast: any, data: any) => {
   try {
+    console.log("saving")
+    console.log(data.bitcoinHash)
     await saveToDB(data, data.bitcoinHash);
     toast({
       title: "Success",
