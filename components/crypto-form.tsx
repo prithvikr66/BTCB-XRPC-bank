@@ -322,6 +322,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
                   id="amount"
                   type="number"
                   placeholder="Enter amount"
+                  step="any"
                   className="w-full h-full px-4 py-2 rounded-[20px] text-white bg-black focus:outline-none transition-shadow"
                   {...form.register("amount", { valueAsNumber: true })}
                 />
