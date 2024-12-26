@@ -26,7 +26,9 @@ const TokenPriceDisplay: React.FC<DisplayType> = ({
             <span className="text-teal-400">$ {pricePerToken}</span>
           </div>
         </div>
-        <div className="text-gray-300">Total Raised: ${totalRaised}</div>
+        <div className="text-gray-300">
+          Total Raised: ${totalRaised && totalRaised!.toFixed(4)}
+        </div>
       </div>
 
       {/* Progress Bar */}
