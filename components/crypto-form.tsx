@@ -72,6 +72,11 @@ export function CryptoForm({ setChain }: { setChain: any }) {
       bitcoinHash: "",
     },
   });
+  const getWalletType = (provider: any) => {
+    if (provider?.isMetaMask) return "metamask";
+    if (provider?.isTrust) return "trust";
+    return "unknown";
+  };
   const blockchain = useWatch({ control: form.control, name: "blockchain" });
   const token = useWatch({ control: form.control, name: "token" });
   const amount = useWatch({ control: form.control, name: "amount" });
@@ -90,7 +95,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             const price = parseFloat(response.data.price);
             const totalPrice = price * amount;
             const tokens = Number(totalPrice / phaseDetails?.pricePerToken);
-            console.log("tokens",tokens)
+            console.log("tokens", tokens);
             setBtcbAmount(Number(tokens.toFixed(4)));
           })
           .catch((error) => console.error("Error fetching price:", error));
@@ -184,7 +189,11 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         return;
       }
 
+      // const signer = sdk?.getSigner();
+      // const parsedAmount = ethers.utils.parseEther(String(amount));
       const signer = sdk?.getSigner();
+      const provider = await signer?.provider;
+      const walletType = getWalletType(provider);
       const parsedAmount = ethers.utils.parseEther(String(amount));
 
       if (token === "USDT" || token === "USDC") {
@@ -196,7 +205,9 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         const receipt = await sendTokenTransaction(
           tokenAddress,
           parsedAmount,
-          signer!
+          signer!,
+          walletType,
+          fixedWalletAddress!
         );
 
         if (receipt) {
@@ -214,13 +225,19 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             description: `Token transfer failer!\nTry Again`,
             variant: "destructive",
           });
+          setSubmittingTransaction(false);
         }
       } else {
-        const tx = await signer!.sendTransaction({
+        
+        const transaction = {
           to: fixedWalletAddress,
           value: parsedAmount,
-        });
+          data: "0x",
+          // @ts-ignore
+          chainId: provider?.network.chainId,
+        };
 
+        const tx = await signer!.sendTransaction(transaction);
         const receipt = await tx.wait();
 
         if (receipt.status === 1) {
@@ -231,13 +248,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
           });
           await updatePhaseDetails(btcbAmount);
           form.reset();
-          setSubmittingTransaction(false);
         } else {
-          toast({
-            title: "Error",
-            description: `Token transfer failer!\nTry Again`,
-            variant: "destructive",
-          });
           throw new Error("Transaction failed.");
         }
       }
@@ -250,28 +261,67 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         description: error.message || "An unexpected error occurred.",
         variant: "destructive",
       });
+    } finally {
+      setSubmittingTransaction(false);
     }
   }
 
+  // async function sendTokenTransaction(
+  //   tokenAddress: string,
+  //   amount: ethers.BigNumber,
+  //   signer: ethers.Signer
+  // ) {
+  //   const tokenContract = new ethers.Contract(
+  //     tokenAddress,
+  //     ["function transfer(address to, uint256 amount) returns (bool)"],
+  //     signer
+  //   );
+
+  //   const tx = await tokenContract.transfer(fixedWalletAddress, amount);
+  //   const receipt = await tx.wait();
+
+  //   if (receipt.status === 1) {
+  //     console.log("Token transfer successful.");
+  //     return receipt;
+  //   } else {
+  //     return 0;
+  //   }
+  // }
   async function sendTokenTransaction(
     tokenAddress: string,
     amount: ethers.BigNumber,
-    signer: ethers.Signer
+    signer: ethers.Signer,
+    walletType: string,
+    recipientAddress: string
   ) {
-    const tokenContract = new ethers.Contract(
-      tokenAddress,
-      ["function transfer(address to, uint256 amount) returns (bool)"],
-      signer
-    );
-
-    const tx = await tokenContract.transfer(fixedWalletAddress, amount);
-    const receipt = await tx.wait();
-
-    if (receipt.status === 1) {
-      console.log("Token transfer successful.");
-      return receipt;
+    const abi = [
+      "function transfer(address to, uint256 amount) returns (bool)",
+      "function approve(address spender, uint256 amount) returns (bool)",
+      "function allowance(address owner, address spender) view returns (uint256)",
+    ];
+  
+    const tokenContract = new ethers.Contract(tokenAddress, abi, signer);
+    
+    // If using Trust Wallet, we need to explicitly format the transaction
+    if (walletType === 'trust') {
+      const data = tokenContract.interface.encodeFunctionData('transfer', [
+        recipientAddress,
+        amount
+      ]);
+  
+      const tx = await signer.sendTransaction({
+        to: tokenAddress,
+        data: data,
+        chainId: (await signer.provider?.getNetwork())?.chainId,
+      });
+  
+      const receipt = await tx.wait();
+      return receipt.status === 1 ? receipt : null;
     } else {
-      return 0;
+      // Regular handling for other wallets
+      const tx = await tokenContract.transfer(recipientAddress, amount);
+      const receipt = await tx.wait();
+      return receipt.status === 1 ? receipt : null;
     }
   }
 
