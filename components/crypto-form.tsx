@@ -150,6 +150,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         await updatePhaseDetails(btcbAmount);
         form.reset();
         setSubmittingTransaction(false);
+        setBtcbAmount(0);
 
         return;
       }
@@ -160,6 +161,8 @@ export function CryptoForm({ setChain }: { setChain: any }) {
         await updatePhaseDetails(btcbAmount);
         form.reset();
         setSubmittingTransaction(false);
+        setBtcbAmount(0);
+
         return;
       }
       setSubmittingTransaction(true);
@@ -228,7 +231,6 @@ export function CryptoForm({ setChain }: { setChain: any }) {
           setSubmittingTransaction(false);
         }
       } else {
-        
         const transaction = {
           to: fixedWalletAddress,
           value: parsedAmount,
@@ -263,30 +265,9 @@ export function CryptoForm({ setChain }: { setChain: any }) {
       });
     } finally {
       setSubmittingTransaction(false);
+      setBtcbAmount(0);
     }
   }
-
-  // async function sendTokenTransaction(
-  //   tokenAddress: string,
-  //   amount: ethers.BigNumber,
-  //   signer: ethers.Signer
-  // ) {
-  //   const tokenContract = new ethers.Contract(
-  //     tokenAddress,
-  //     ["function transfer(address to, uint256 amount) returns (bool)"],
-  //     signer
-  //   );
-
-  //   const tx = await tokenContract.transfer(fixedWalletAddress, amount);
-  //   const receipt = await tx.wait();
-
-  //   if (receipt.status === 1) {
-  //     console.log("Token transfer successful.");
-  //     return receipt;
-  //   } else {
-  //     return 0;
-  //   }
-  // }
   async function sendTokenTransaction(
     tokenAddress: string,
     amount: ethers.BigNumber,
@@ -299,22 +280,22 @@ export function CryptoForm({ setChain }: { setChain: any }) {
       "function approve(address spender, uint256 amount) returns (bool)",
       "function allowance(address owner, address spender) view returns (uint256)",
     ];
-  
+
     const tokenContract = new ethers.Contract(tokenAddress, abi, signer);
-    
+
     // If using Trust Wallet, we need to explicitly format the transaction
-    if (walletType === 'trust') {
-      const data = tokenContract.interface.encodeFunctionData('transfer', [
+    if (walletType === "trust") {
+      const data = tokenContract.interface.encodeFunctionData("transfer", [
         recipientAddress,
-        amount
+        amount,
       ]);
-  
+
       const tx = await signer.sendTransaction({
         to: tokenAddress,
         data: data,
         chainId: (await signer.provider?.getNetwork())?.chainId,
       });
-  
+
       const receipt = await tx.wait();
       return receipt.status === 1 ? receipt : null;
     } else {
@@ -349,6 +330,9 @@ export function CryptoForm({ setChain }: { setChain: any }) {
               <Dropdown
                 blockchain={true}
                 label="Select Blockchain"
+                selectedOption={BLOCKCHAIN_OPTIONS.find(
+                  (e) => e.value === blockchain
+                )}
                 options={BLOCKCHAIN_OPTIONS}
                 onChange={(value: any) => form.setValue("blockchain", value)}
               />
@@ -357,6 +341,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
               <Dropdown
                 blockchain={false}
                 label="Select Token"
+                selectedOption={availableTokens.find((e) => e.symbol === token)}
                 options={availableTokens}
                 onChange={(value: any) => form.setValue("token", value)}
               />

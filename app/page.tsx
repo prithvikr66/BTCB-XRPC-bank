@@ -28,7 +28,7 @@ export default function Home() {
   return (
     <QueryClientProvider client={queryClient}>
       <SolanaWalletProvider>
-        <ThirdwebProvider activeChain={ChainId.Mainnet}>
+        <ThirdwebProvider activeChain={ChainId.Mainnet} clientId="f6cd769c7e501df9c6f817c061795107f6cd769c7e501df9c6f817c061795107">
           {/* <ClientContextProvider defaultChains={[mainnet.id]}> */}
             <Suspense fallback={<div>Loading...</div>}>
               <div className=" bg-black">

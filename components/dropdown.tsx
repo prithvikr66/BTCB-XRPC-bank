@@ -6,12 +6,15 @@ const Dropdown = ({
   onChange,
   label,
   blockchain,
+  selectedOption={},
 }: {
   options: any;
   onChange: any;
   label: string;
   blockchain: boolean;
+  selectedOption: any;
 }) => {
+  console.log("selected option:", selectedOption);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -50,14 +53,10 @@ const Dropdown = ({
       >
         <div className="w-full text-lg text-[#8F8F8F] opacity text-center h-full rounded-full bg-black px-4 py-2 flex justify-between items-center">
           <div className=" flex items-center gap-[10px]">
-            {selectedImg && (
-              <img
-                src={selectedImg }
-                height={"30"}
-                width="30"
-              />
+            {selectedOption.img && (
+              <img src={selectedOption.img} height={"30"} width="30" />
             )}
-            {selected || label}
+            {selectedOption.label || selectedOption.symbol || label}
           </div>
           <svg
             className={`w-5 h-5 transition-transform ${
