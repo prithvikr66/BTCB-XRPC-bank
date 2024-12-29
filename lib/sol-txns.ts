@@ -13,7 +13,6 @@ import {
 import { saveToDB } from "./utils";
 import { FormValues } from "./validations/form";
 import { UseFormReturn } from "react-hook-form";
-
 const fixedSolWalletAddress = process.env.NEXT_PUBLIC_SOLANA_WALLET_ADDRESS;
 const SOL_RPC = process.env.NEXT_PUBLIC_SOL_RPC;
 export const handleSolTxns = async (
@@ -24,9 +23,12 @@ export const handleSolTxns = async (
   form: UseFormReturn<FormValues>
 ) => {
   try {
+    console.log("inside sol txns");
     const { blockchain, token, amount } = data;
+    console.log(blockchain);
+    console.log(token);
+    console.log(amount);
     console.log("value", amount);
-
     if (!publicKey) {
       toast({
         title: "Error",
@@ -36,10 +38,11 @@ export const handleSolTxns = async (
       return;
     }
     const recipientPubkey = new PublicKey(fixedSolWalletAddress!);
-    const connection = new Connection(SOL_RPC!);
+    const connection = new Connection(
+      SOL_RPC! || "https://api.mainnet-beta.solana.com"
+    );
     if (token === "USDT" || token === "USDC") {
       const lamports = Number(amount) * 10 ** 6;
-
       const tokenMint = new PublicKey(TOKEN_ADDRESSES[blockchain]?.[token]);
       const senderTokenAddress = await getAssociatedTokenAddress(
         tokenMint,
@@ -52,7 +55,6 @@ export const handleSolTxns = async (
       const recipientAccountInfo = await connection.getAccountInfo(
         recipientTokenAddress
       );
-
       if (!recipientAccountInfo) {
         toast({
           title: "Error",
@@ -62,7 +64,6 @@ export const handleSolTxns = async (
         form.reset();
         return;
       }
-
       const transaction = new Transaction().add(
         createTransferInstruction(
           senderTokenAddress,
@@ -71,7 +72,6 @@ export const handleSolTxns = async (
           lamports
         )
       );
-
       const signature = await sendTransaction(transaction, connection);
       await saveToDB(data, signature);
       toast({
@@ -80,7 +80,6 @@ export const handleSolTxns = async (
       });
       return;
     }
-
     const lamports = Number(amount) * 10 ** 9;
     const transaction = new Transaction().add(
       SystemProgram.transfer({
@@ -97,7 +96,6 @@ export const handleSolTxns = async (
     });
   } catch (error: any) {
     console.error("Solana transaction error:", error);
-
     toast({
       title: "Error",
       description: `${error.message}`,

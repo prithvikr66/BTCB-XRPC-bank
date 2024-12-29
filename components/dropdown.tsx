@@ -14,7 +14,6 @@ const Dropdown = ({
   blockchain: boolean;
   selectedOption: any;
 }) => {
-  console.log("selected option:", selectedOption);
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState();
   const dropdownRef = useRef<HTMLDivElement>(null);
