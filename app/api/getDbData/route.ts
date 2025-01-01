@@ -39,6 +39,32 @@ const Transaction =
   mongoose.models.Transaction ||
   mongoose.model("Transaction", transactionSchema);
 
+const convertToCSV = (phaseData: IPhaseDetails[], transactionData: any) => {
+  // Headers for phase details
+  let csv = "Phase Details\n";
+  csv +=
+    "Current Phase,Tokens Sold,Tokens Remaining,Price Per Token,Total Raised\n";
+
+  // Phase details data
+  phaseData.forEach((phase) => {
+    csv += `${phase.currentPhase},${phase.tokensSold},${phase.tokensRemaining},${phase.pricePerToken},${phase.totalRaised}\n`;
+  });
+
+  // Add a blank line between sections
+  csv += "\nTransaction Details\n";
+
+  // Headers for transactions
+  csv +=
+    "Blockchain,Token,Amount,Promo Code,Bitcoin Address,Email,Telegram ID,Transaction Hash,Created At\n";
+
+  // Transaction data
+  transactionData.forEach((transaction: any) => {
+    csv += `${transaction.blockchain},${transaction.token},${transaction.amount},${transaction.promoCode},${transaction.bitcoinAddress},${transaction.email},${transaction.telegramId},${transaction.txnHash},${transaction.createdAt}\n`;
+  });
+
+  return csv;
+};
+
 export async function GET() {
   try {
     await connectDB();
@@ -46,34 +72,24 @@ export async function GET() {
     const phaseDetails = await PhaseDetails.find({});
     const transactions = await Transaction.find({});
 
-    const combinedData = [
-      ...phaseDetails.map((phase: any) => ({
-        type: "Phase Details",
-        ...phase.toObject(),
-      })),
-      ...transactions.map((transactions) => ({
-        type: "Transactions",
-        ...transactions.toObject(),
-      })),
-    ];
+    const csvData = convertToCSV(phaseDetails, transactions);
 
-    // Convert data to CSV
-    const fields = Object.keys(combinedData[0] || {});
-    const json2csvParser = new Parser({ fields });
-    const csv = json2csvParser.parse(combinedData);
+    const headers = {
+      "Content-Type": "text/csv",
+      "Content-Disposition": 'attachment; filename="export.csv"',
+    };
 
-    // Return the CSV file as a response
-    return new NextResponse(csv, {
-      headers: {
-        "Content-Type": "text/csv",
-        "Content-Disposition": "attachment; filename=data.csv",
-      },
-    });
+    return new NextResponse(csvData, { headers });
   } catch (error) {
-    console.error("Error exporting CSV:", error);
-    return NextResponse.json(
-      { error: "Failed to export CSV" },
-      { status: 500 }
+    console.error("Error generating CSV:", error);
+    return new NextResponse(
+      JSON.stringify({ error: "Failed to generate CSV" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
   }
 }

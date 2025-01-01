@@ -146,7 +146,7 @@ export function CryptoForm({ setChain }: { setChain: any }) {
       const { blockchain, token, amount } = data;
       if (blockchain === "solana") {
         setSubmittingTransaction(true);
-        await handleSolTxns(publicKey, toast, data, sendTransaction, form);
+        await handleSolTxns(publicKey!, toast, data, sendTransaction, form);
         await updatePhaseDetails(btcbAmount);
         form.reset();
         setSubmittingTransaction(false);

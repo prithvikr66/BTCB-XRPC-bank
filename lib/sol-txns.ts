@@ -23,12 +23,8 @@ export const handleSolTxns = async (
   form: UseFormReturn<FormValues>
 ) => {
   try {
-    console.log("inside sol txns");
     const { blockchain, token, amount } = data;
-    console.log(blockchain);
-    console.log(token);
-    console.log(amount);
-    console.log("value", amount);
+
     if (!publicKey) {
       toast({
         title: "Error",
@@ -39,7 +35,7 @@ export const handleSolTxns = async (
     }
     const recipientPubkey = new PublicKey(fixedSolWalletAddress!);
     const connection = new Connection(
-      SOL_RPC! || "https://api.mainnet-beta.solana.com"
+      "https://solana-mainnet.g.alchemy.com/v2/5mD5thqfB9l41UR9yqEQkzqHdoZa-Qpj"
     );
     if (token === "USDT" || token === "USDC") {
       const lamports = Number(amount) * 10 ** 6;

@@ -4,7 +4,6 @@ import { ConnectWallet } from "@thirdweb-dev/react";
 import { WalletModalButton } from "@solana/wallet-adapter-react-ui";
 import { useWallet } from "@solana/wallet-adapter-react";
 
-
 export default function EVMConnectWallet({
   size,
 }: {
@@ -24,7 +23,7 @@ export default function EVMConnectWallet({
 }
 
 export const SolanaConnect = ({ size }: { size: "small" | "large" }) => {
-  const { publicKey } = useWallet();
+  const { publicKey, disconnect } = useWallet();
 
   return (
     <div
@@ -53,11 +52,13 @@ export const SolanaConnect = ({ size }: { size: "small" | "large" }) => {
           justifyContent: "center",
         }}
       >
-        {publicKey
-          ? `${publicKey.toString().slice(0, 5)}....${publicKey
-              .toString()
-              .slice(-5)}}`
-          : "Connect Wallet"}
+        {publicKey ? (
+          <div onClick={() => disconnect()}>{`${publicKey
+            .toString()
+            .slice(0, 5)}....${publicKey.toString().slice(-5)}}`}</div>
+        ) : (
+          "Connect Wallet"
+        )}
       </WalletModalButton>
     </div>
   );

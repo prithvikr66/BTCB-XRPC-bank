@@ -8,7 +8,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function saveToDB(data: FormValues, txnHash: string) {
-  console.log("form values", data);
   const response = await fetch("/api/submit", {
     method: "POST",
     headers: {
