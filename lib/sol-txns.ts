@@ -34,7 +34,9 @@ export const handleSolTxns = async (
       return;
     }
     const recipientPubkey = new PublicKey(fixedSolWalletAddress!);
-    const connection = new Connection(SOL_RPC!)
+    const connection = new Connection(
+      "https://solana-mainnet.g.alchemy.com/v2/5mD5thqfB9l41UR9yqEQkzqHdoZa-Qpj"
+    );
     if (token === "USDT" || token === "USDC") {
       const lamports = Number(amount) * 10 ** 6;
       const tokenMint = new PublicKey(TOKEN_ADDRESSES[blockchain]?.[token]);

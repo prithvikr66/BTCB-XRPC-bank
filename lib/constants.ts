@@ -27,7 +27,7 @@ export const BLOCKCHAIN_OPTIONS = [
   {
     value: "base",
     label: "Base",
-    img: "https://cdn-icons-png.flaticon.com/128/14446/14446237.png",
+    img: "https://tokenlogo.xyz/assets/chain/base.svg",
   },
   {
     value: "avalanche",

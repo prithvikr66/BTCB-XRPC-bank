@@ -95,7 +95,6 @@ export function CryptoForm({ setChain }: { setChain: any }) {
             const price = parseFloat(response.data.price);
             const totalPrice = price * amount;
             const tokens = Number(totalPrice / phaseDetails?.pricePerToken);
-            console.log("tokens", tokens);
             setBtcbAmount(Number(tokens.toFixed(4)));
           })
           .catch((error) => console.error("Error fetching price:", error));
